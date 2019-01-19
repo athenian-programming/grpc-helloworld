@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+
+// import "google/protobuf/empty.proto";
+
+service CubeFinder {
+    // rpc getCoordinates (google.protobuf.Empty) returns (Coordinates) {}
+    rpc getCoordinates (CoorRequest) returns (CoorResponse) {}
+}
+
+message CoorRequest {
+    string time = 1;
+}
+
+message CoorResponse {
+    int32 x = 1;
+    int32 y = 2;
+    int32 z = 3;
+    string time = 4;
+}

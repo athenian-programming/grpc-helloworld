@@ -14,20 +14,21 @@
 
 """The Python implementation of the GRPC helloworld.Greeter server."""
 
-from concurrent import futures
-import time
 import logging
+import time
+from concurrent import futures
 
+# import os, sys
+#
+# sys.path.append(os.path.abspath(os.path.join(__file__, '..', '..', '..', 'build')))
+import build.generated.source.python.helloworld_pb2 as helloworld_pb2
+import build.generated.source.python.helloworld_pb2_grpc as helloworld_pb2_grpc
 import grpc
-
-import helloworld_pb2
-import helloworld_pb2_grpc
-
 
 
 class Greeter(helloworld_pb2_grpc.GreeterServicer):
 
-    def SayHello(self, request, context):6
+    def SayHello(self, request, context):
         return helloworld_pb2.HelloReply(message='Hello, %s!' % request.name)
 
 
@@ -46,4 +47,3 @@ def serve():
 if __name__ == '__main__':
     logging.basicConfig()
     serve()
-

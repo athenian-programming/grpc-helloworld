@@ -47,7 +47,7 @@ class GreeterImpl
 
   @Override
   public void sayHelloWithManyReplies(HelloRequest request, StreamObserver<HelloReply> responseObserver) {
-    IntStream.range(0, 10)
+    IntStream.range(0, 5)
              .forEach((i) -> {
                HelloReply reply = HelloReply.newBuilder()
                                             .setMessage(String.format("Hello %s [%d]", request.getName(), i))
@@ -75,7 +75,7 @@ class GreeterImpl
 
           @Override
           public void onError(Throwable t) {
-            System.out.println("Encountered error in sayHelloWithManyRequestsAndReplies");
+            System.out.println("Encountered error in sayHelloWithManyRequestsAndReplies()");
             t.printStackTrace();
           }
 

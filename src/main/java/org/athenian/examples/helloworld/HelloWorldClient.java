@@ -6,6 +6,7 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
+import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -38,7 +39,8 @@ public class HelloWorldClient {
         user = args[0]; /* Use the arg as the name to greet if provided */
       }
       client.sayHello(user);
-      client.sayHelloWithMayRequests(user);
+      client.sayHelloWithManyRequests(user);
+      client.sayHelloWithManyReplies(user);
     }
     finally {
       client.shutdown();
@@ -51,7 +53,6 @@ public class HelloWorldClient {
   }
 
   public void sayHello(String name) {
-    System.out.println("Will try to greet " + name + " ...");
     HelloRequest request = HelloRequest.newBuilder()
                                        .setName(name)
                                        .build();
@@ -63,10 +64,10 @@ public class HelloWorldClient {
       System.out.println(String.format("sayHello() failed: %s", e.getStatus()));
       return;
     }
-    System.out.println("Greeting: " + response.getMessage());
+    System.out.println(String.format("sayHello() response: %s\n", response.getMessage()));
   }
 
-  public void sayHelloWithMayRequests(String name) {
+  public void sayHelloWithManyRequests(String name) {
 
     final CountDownLatch finishLatch = new CountDownLatch(1);
 
@@ -74,7 +75,7 @@ public class HelloWorldClient {
         new StreamObserver<HelloReply>() {
           @Override
           public void onNext(HelloReply reply) {
-            System.out.println("Greeting: " + reply.getMessage());
+            System.out.println(String.format("sayHelloWithManyRequests() response: %s\n", reply.getMessage()));
           }
 
           @Override
@@ -91,6 +92,7 @@ public class HelloWorldClient {
         };
 
     StreamObserver<HelloRequest> requestObserver = asyncStub.sayHelloWithManyRequests(responseObserver);
+
     try {
       for (int i = 0; i < 5; i++) {
         HelloRequest request = HelloRequest.newBuilder()
@@ -110,6 +112,7 @@ public class HelloWorldClient {
       requestObserver.onError(e);
       throw e;
     }
+
     // Mark the end of requests
     requestObserver.onCompleted();
 
@@ -120,5 +123,20 @@ public class HelloWorldClient {
     catch (InterruptedException e) {
       e.printStackTrace();
     }
+  }
+
+  public void sayHelloWithManyReplies(String name) {
+
+    HelloRequest request = HelloRequest.newBuilder()
+                                       .setName(name)
+                                       .build();
+
+    Iterator<HelloReply> replies = blockingStub.sayHelloWithManyReplies(request);
+
+    System.out.println("sayHelloWithManyReplies() responses:");
+    replies.forEachRemaining((reply) -> {
+      System.out.println(reply.getMessage());
+    });
+    System.out.println();
   }
 }

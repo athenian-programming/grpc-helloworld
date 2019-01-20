@@ -18,13 +18,14 @@ import logging
 import time
 from concurrent import futures
 
+import grpc
+import helloworld_pb2
+import helloworld_pb2_grpc
+
+
 # import os, sys
 #
 # sys.path.append(os.path.abspath(os.path.join(__file__, '..', '..', '..', 'build')))
-import build.generated.source.python.helloworld_pb2 as helloworld_pb2
-import build.generated.source.python.helloworld_pb2_grpc as helloworld_pb2_grpc
-import grpc
-
 
 class Greeter(helloworld_pb2_grpc.GreeterServicer):
 
@@ -39,7 +40,7 @@ def serve():
     server.start()
     try:
         while True:
-            time.sleep(_ONE_DAY_IN_SECONDS)
+            time.sleep(60 * 60 * 24)
     except KeyboardInterrupt:
         server.stop(0)
 

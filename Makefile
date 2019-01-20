@@ -1,4 +1,6 @@
-default: grpc
+default: all
+
+all: clean grpc bin
 
 grpc:
 	./gradlew assemble build

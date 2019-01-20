@@ -18,7 +18,7 @@ repositories {
         url "https://maven-central.storage-download.googleapis.com/repos/central/data/"
     }
     mavenLocal()
-    mavenCentral()
+    //mavenCentral()
 }
 
 def grpcVersion = '1.18.0' // CURRENT_GRPC_VERSION
@@ -65,14 +65,14 @@ sourceSets {
 startScripts.enabled = false
 
 task helloWorldServer(type: CreateStartScripts) {
-    mainClassName = 'io.grpc.examples.helloworld.HelloWorldServer'
+    mainClassName = 'org.athenian.examples.helloworld.HelloWorldServer'
     applicationName = 'hello-world-server'
     outputDir = new File(project.buildDir, 'tmp')
     classpath = startScripts.classpath
 }
 
 task helloWorldClient(type: CreateStartScripts) {
-    mainClassName = 'io.grpc.examples.helloworld.HelloWorldClient'
+    mainClassName = 'org.athenian.examples.helloworld.HelloWorldClient'
     applicationName = 'hello-world-client'
     outputDir = new File(project.buildDir, 'tmp')
     classpath = startScripts.classpath

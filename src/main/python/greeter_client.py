@@ -13,14 +13,18 @@
 # limitations under the License.
 """The Python implementation of the GRPC helloworld.Greeter client."""
 
+from __future__ import absolute_import
 from __future__ import print_function
 
 import logging
+import sys
 
 import grpc
 
-from build.generated.source.python import helloworld_pb2
-from build.generated.source.python import helloworld_pb2_grpc
+sys.path.append('build/generated/source/python')
+
+import helloworld_pb2
+import helloworld_pb2_grpc
 
 
 def run():

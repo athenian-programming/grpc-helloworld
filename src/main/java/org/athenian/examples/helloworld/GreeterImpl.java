@@ -6,6 +6,8 @@ import io.grpc.stub.StreamObserver;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static java.lang.String.format;
+
 class GreeterImpl
     extends GreeterGrpc.GreeterImplBase {
 
@@ -50,7 +52,7 @@ class GreeterImpl
     IntStream.range(0, 5)
              .forEach((i) -> {
                HelloReply reply = HelloReply.newBuilder()
-                                            .setMessage(String.format("Hello %s [%d]", request.getName(), i))
+                                            .setMessage(format("Hello %s [%d]", request.getName(), i))
                                             .build();
                responseObserver.onNext(reply);
              });
@@ -67,7 +69,7 @@ class GreeterImpl
             IntStream.range(0, 5)
                      .forEach((i) -> {
                        HelloReply reply = HelloReply.newBuilder()
-                                                    .setMessage(String.format("Hello %s [%d]", request.getName(), i))
+                                                    .setMessage(format("Hello %s [%d]", request.getName(), i))
                                                     .build();
                        responseObserver.onNext(reply);
                      });

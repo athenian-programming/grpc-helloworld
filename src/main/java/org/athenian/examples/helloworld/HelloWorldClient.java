@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import static java.lang.String.format;
+
 public class HelloWorldClient {
   private final ManagedChannel                  channel;
   private final GreeterGrpc.GreeterBlockingStub blockingStub;
@@ -34,13 +36,14 @@ public class HelloWorldClient {
     HelloWorldClient client = new HelloWorldClient("localhost", 50051);
     try {
       /* Access a service running on the local machine on port 50051 */
-      String user = "world";
+      String name = "world";
       if (args.length > 0) {
-        user = args[0]; /* Use the arg as the name to greet if provided */
+        name = args[0]; /* Use the arg as the name to greet if provided */
       }
-      client.sayHello(user);
-      client.sayHelloWithManyRequests(user);
-      client.sayHelloWithManyReplies(user);
+      client.sayHello(name);
+      client.sayHelloWithManyRequests(name);
+      client.sayHelloWithManyReplies(name);
+      client.sayHelloWithManyRequestsAndReplies(name);
     }
     finally {
       client.shutdown();
@@ -61,10 +64,10 @@ public class HelloWorldClient {
       response = this.blockingStub.sayHello(request);
     }
     catch (StatusRuntimeException e) {
-      System.out.println(String.format("sayHello() failed: %s", e.getStatus()));
+      System.out.println(format("sayHello() failed: %s", e.getStatus()));
       return;
     }
-    System.out.println(String.format("sayHello() response: %s\n", response.getMessage()));
+    System.out.println(format("sayHello() response: %s\n", response.getMessage()));
   }
 
   public void sayHelloWithManyRequests(String name) {
@@ -75,13 +78,13 @@ public class HelloWorldClient {
         new StreamObserver<HelloReply>() {
           @Override
           public void onNext(HelloReply reply) {
-            System.out.println(String.format("sayHelloWithManyRequests() response: %s\n", reply.getMessage()));
+            System.out.println(format("sayHelloWithManyRequests() response: %s\n", reply.getMessage()));
           }
 
           @Override
           public void onError(Throwable t) {
             Status status = Status.fromThrowable(t);
-            System.out.println(String.format("sayHelloWithMayRequests() failed: %s", status));
+            System.out.println(format("sayHelloWithMayRequests() failed: %s", status));
             finishLatch.countDown();
           }
 
@@ -96,7 +99,7 @@ public class HelloWorldClient {
     try {
       for (int i = 0; i < 5; i++) {
         HelloRequest request = HelloRequest.newBuilder()
-                                           .setName(String.format("%s-%d", name, i))
+                                           .setName(format("%s-%d", name, i))
                                            .build();
         requestObserver.onNext(request);
 
@@ -138,5 +141,64 @@ public class HelloWorldClient {
       System.out.println(reply.getMessage());
     });
     System.out.println();
+  }
+
+  public void sayHelloWithManyRequestsAndReplies(String name) {
+
+    final CountDownLatch finishLatch = new CountDownLatch(1);
+
+    StreamObserver<HelloReply> responseObserver =
+        new StreamObserver<HelloReply>() {
+          @Override
+          public void onNext(HelloReply reply) {
+            System.out.println(format("sayHelloWithManyRequestsAndReplies() response: %s", reply.getMessage()));
+          }
+
+          @Override
+          public void onError(Throwable t) {
+            Status status = Status.fromThrowable(t);
+            System.out.println(format("sayHelloWithManyRequestsAndReplies() failed: %s", status));
+            finishLatch.countDown();
+          }
+
+          @Override
+          public void onCompleted() {
+            finishLatch.countDown();
+          }
+        };
+
+    StreamObserver<HelloRequest> requestObserver = asyncStub.sayHelloWithManyRequestsAndReplies(responseObserver);
+
+    try {
+      for (int i = 0; i < 5; i++) {
+        HelloRequest request = HelloRequest.newBuilder()
+                                           .setName(format("%s-%d", name, i))
+                                           .build();
+        System.out.println(format("sayHelloWithManyRequestsAndReplies() request: %s", request.getName()));
+        requestObserver.onNext(request);
+
+        if (finishLatch.getCount() == 0) {
+          // RPC completed or errored before we finished sending.
+          // Sending further requests won't error, but they will just be thrown away.
+          return;
+        }
+      }
+    }
+    catch (RuntimeException e) {
+      // Cancel RPC
+      requestObserver.onError(e);
+      throw e;
+    }
+
+    // Mark the end of requests
+    requestObserver.onCompleted();
+
+    // Receiving happens asynchronously
+    try {
+      finishLatch.await(1, TimeUnit.MINUTES);
+    }
+    catch (InterruptedException e) {
+      e.printStackTrace();
+    }
   }
 }

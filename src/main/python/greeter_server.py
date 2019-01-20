@@ -14,21 +14,16 @@
 
 """The Python implementation of the GRPC helloworld.Greeter server."""
 
+import grpc
 import logging
 import sys
 import time
 from concurrent import futures
 
-import grpc
-
 sys.path.append('build/generated/source/python')
 
 import helloworld_pb2
 import helloworld_pb2_grpc
-
-# import os, sys
-#
-# sys.path.append(os.path.abspath(os.path.join(__file__, '..', '..', '..', 'build')))
 
 class Greeter(helloworld_pb2_grpc.GreeterServicer):
 

@@ -4,16 +4,13 @@ all: clean stubs bin
 
 stubs:
 	./gradlew assemble build
-	#mkdir -p ./build/generated/source/python
-	mkdir -p ./src/main/python/generated
-	#python3 -m grpc_tools.protoc -I. --python_out=./build/generated/source/python --grpc_python_out=./build/generated/source/python --proto_path=./src/main/proto helloworld.proto
-	python3 -m grpc_tools.protoc -I. --python_out=./src/main/python/generated --grpc_python_out=./src/main/python/generated --proto_path=./src/main/proto helloworld.proto
-	#touch ./build/generated/source/python/__init__.py
-	touch ./src/main/python/generated/__init__.py
+	mkdir -p ./build/generated/source/python
+	python3 -m grpc_tools.protoc -I. --python_out=./build/generated/source/python --grpc_python_out=./build/generated/source/python --proto_path=./src/main/proto helloworld.proto
+	#python3 -m grpc_tools.protoc -I. --python_out=./src/main/python/generated --grpc_python_out=./src/main/python/generated --proto_path=./src/main/proto helloworld.proto
+	touch ./build/generated/source/python/__init__.py
 
 clean:
 	./gradlew clean
-	rm -f ./src/main/python/generated/*.py
 
 bin:
 	./gradlew install

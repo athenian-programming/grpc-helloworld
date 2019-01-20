@@ -19,8 +19,8 @@ import logging
 
 import grpc
 
-from generated import helloworld_pb2
-from generated import helloworld_pb2_grpc
+from build.generated.source.python import helloworld_pb2
+from build.generated.source.python import helloworld_pb2_grpc
 
 
 def run():

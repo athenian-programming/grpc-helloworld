@@ -20,8 +20,8 @@ from concurrent import futures
 
 import grpc
 
-from generated import helloworld_pb2
-from generated import helloworld_pb2_grpc
+from build.generated.source.python import helloworld_pb2
+from build.generated.source.python import helloworld_pb2_grpc
 
 
 # import os, sys

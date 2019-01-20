@@ -8,12 +8,8 @@ import io.grpc.stub.StreamObserver;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class HelloWorldClient {
-  private static final Logger logger = Logger.getLogger(HelloWorldClient.class.getName());
-
   private final ManagedChannel                  channel;
   private final GreeterGrpc.GreeterBlockingStub blockingStub;
   private final GreeterGrpc.GreeterStub         asyncStub;
@@ -55,7 +51,7 @@ public class HelloWorldClient {
   }
 
   public void sayHello(String name) {
-    logger.info("Will try to greet " + name + " ...");
+    System.out.println("Will try to greet " + name + " ...");
     HelloRequest request = HelloRequest.newBuilder()
                                        .setName(name)
                                        .build();
@@ -64,14 +60,13 @@ public class HelloWorldClient {
       response = this.blockingStub.sayHello(request);
     }
     catch (StatusRuntimeException e) {
-      logger.log(Level.WARNING, "sayHello() failed: {0}", e.getStatus());
+      System.out.println(String.format("sayHello() failed: %s", e.getStatus()));
       return;
     }
-    logger.info("Greeting: " + response.getMessage());
+    System.out.println("Greeting: " + response.getMessage());
   }
 
   public void sayHelloWithMayRequests(String name) {
-    logger.info("Will try to greet " + name + " many times...");
 
     final CountDownLatch finishLatch = new CountDownLatch(1);
 
@@ -79,13 +74,13 @@ public class HelloWorldClient {
         new StreamObserver<HelloReply>() {
           @Override
           public void onNext(HelloReply reply) {
-            logger.info("Greeting: " + reply.getMessage());
+            System.out.println("Greeting: " + reply.getMessage());
           }
 
           @Override
           public void onError(Throwable t) {
             Status status = Status.fromThrowable(t);
-            logger.log(Level.WARNING, "sayHelloWithMayRequests() failed: {0}", status);
+            System.out.println(String.format("sayHelloWithMayRequests() failed: %s", status));
             finishLatch.countDown();
           }
 

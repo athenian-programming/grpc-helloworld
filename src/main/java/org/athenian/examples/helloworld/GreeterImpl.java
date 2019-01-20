@@ -4,14 +4,10 @@ import com.google.common.collect.Lists;
 import io.grpc.stub.StreamObserver;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 class GreeterImpl
     extends GreeterGrpc.GreeterImplBase {
-
-  private static final Logger logger = Logger.getLogger(GreeterImpl.class.getName());
 
   @Override
   public void sayHello(HelloRequest request, StreamObserver<HelloReply> responseObserver) {
@@ -35,7 +31,8 @@ class GreeterImpl
 
           @Override
           public void onError(Throwable t) {
-            logger.log(Level.WARNING, "Encountered error in sayHelloWithManyRequests3", t);
+            System.out.println("Encountered error in sayHelloWithManyRequests()");
+            t.printStackTrace();
           }
 
           @Override
@@ -78,7 +75,8 @@ class GreeterImpl
 
           @Override
           public void onError(Throwable t) {
-            logger.log(Level.WARNING, "Encountered error in sayHelloWithManyRequestsAndReplies", t);
+            System.out.println("Encountered error in sayHelloWithManyRequestsAndReplies");
+            t.printStackTrace();
           }
 
           @Override

@@ -4,19 +4,10 @@ import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
-/**
- * Server that manages startup/shutdown of a {@code Greeter} server.
- */
 public class HelloWorldServer {
-  private static final Logger logger = Logger.getLogger(HelloWorldServer.class.getName());
-
   private Server server;
 
-  /**
-   * Main launches the server from the command line.
-   */
   public static void main(String[] args)
       throws IOException, InterruptedException {
     final HelloWorldServer server = new HelloWorldServer();
@@ -32,7 +23,7 @@ public class HelloWorldServer {
                           .addService(new GreeterImpl())
                           .build()
                           .start();
-    logger.info("Server started, listening on " + port);
+    System.out.println("Server started, listening on " + port);
     Runtime.getRuntime().addShutdownHook(
         new Thread(() -> {
           // Use stderr here since the logger may have been reset by its JVM shutdown hook.

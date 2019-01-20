@@ -1,8 +1,8 @@
 default: all
 
-all: clean grpc bin
+all: clean stubs bin
 
-grpc:
+stubs:
 	./gradlew assemble build
 	#mkdir -p ./build/generated/source/python
 	mkdir -p ./src/main/python/generated

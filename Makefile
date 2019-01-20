@@ -13,7 +13,7 @@ grpc:
 
 clean:
 	./gradlew clean
-	rm ./src/main/python/generated/*.py
+	rm -f ./src/main/python/generated/*.py
 
 bin:
 	./gradlew install

@@ -23,4 +23,4 @@ python-client:
 	python3 src/main/python/greeter_client.py
 
 python-server:
-	python src/main/python/greeter_server.py
+	python3 src/main/python/greeter_server.py

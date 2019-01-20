@@ -2,10 +2,10 @@ default: grpc
 
 grpc:
 	./gradlew assemble build
-	mkdir -p ./build/generated/source/python
-#	python3 -m grpc_tools.protoc -I. --python_out=./build/generated/source/python --grpc_python_out=./build/generated/source/python --proto_path=./src/main/proto helloworld.proto
+	#mkdir -p ./build/generated/source/python
+	#python3 -m grpc_tools.protoc -I. --python_out=./build/generated/source/python --grpc_python_out=./build/generated/source/python --proto_path=./src/main/proto helloworld.proto
 	python3 -m grpc_tools.protoc -I. --python_out=./src/main/python --grpc_python_out=./src/main/python --proto_path=./src/main/proto helloworld.proto
-	touch ./build/generated/source/python/__init__.py
+	#touch ./build/generated/source/python/__init__.py
 
 clean:
 	./gradlew clean

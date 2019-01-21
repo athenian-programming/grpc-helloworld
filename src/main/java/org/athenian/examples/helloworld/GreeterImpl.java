@@ -39,9 +39,10 @@ class GreeterImpl
 
           @Override
           public void onCompleted() {
-            responseObserver.onNext(HelloReply.newBuilder()
-                                              .setMessage("Hello " + String.join(", ", names))
-                                              .build());
+            HelloReply msg = HelloReply.newBuilder()
+                                       .setMessage("Hello " + String.join(", ", names))
+                                       .build();
+            responseObserver.onNext(msg);
             responseObserver.onCompleted();
           }
         };

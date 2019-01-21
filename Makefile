@@ -21,13 +21,13 @@ python-stubs:
 	python3 -m grpc_tools.protoc -I. --python_out=./build/generated/source/python --grpc_python_out=./build/generated/source/python --proto_path=./src/main/proto helloworld.proto
 
 java-client:
-	build/install/HelloWorldGrpc/bin/hello-world-client
+	build/install/HelloWorldGrpc/bin/helloworld-client
 
 java-server:
-	build/install/HelloWorldGrpc/bin/hello-world-server
+	build/install/HelloWorldGrpc/bin/helloworld-server
 
 python-client:
-	python3 src/main/python/greeter_client.py
+	python3 src/main/python/helloworld_client.py
 
 python-server:
-	python3 src/main/python/greeter_server.py
+	python3 src/main/python/helloworld__server.py

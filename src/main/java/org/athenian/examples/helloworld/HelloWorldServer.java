@@ -5,6 +5,8 @@ import io.grpc.ServerBuilder;
 
 import java.io.IOException;
 
+import static java.lang.String.format;
+
 public class HelloWorldServer {
   private Server server;
 
@@ -23,7 +25,7 @@ public class HelloWorldServer {
                           .addService(new GreeterImpl())
                           .build()
                           .start();
-    System.out.println("Server started, listening on " + port);
+    System.out.println(format("Server started, listening on %d", port));
     Runtime.getRuntime().addShutdownHook(
         new Thread(() -> {
           // Use stderr here since the logger may have been reset by its JVM shutdown hook.

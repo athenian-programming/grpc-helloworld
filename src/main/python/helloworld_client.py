@@ -23,7 +23,7 @@ def generate_hellos(name):
 def main():
     name = "World"
     try:
-        with grpc_info.GrpcInfo('localhost') as grpcInfo:
+        with grpc_info.GrpcInfo(host='localhost', port=50051) as grpcInfo:
             sayHello(grpcInfo, name)
             sayHelloWithManyRequests(grpcInfo, name)
             sayHelloWithManyReplies(grpcInfo, name)

@@ -31,3 +31,21 @@ python-client:
 
 python-server:
 	python3 src/main/python/helloworld__server.py
+
+# Maven targets
+mvn-build:
+	./mvnw -DskipTests=true clean package
+
+mvn-clean:
+	./mvnw -DskipTests=true clean
+
+tree:
+	./mvnw dependency:tree
+
+jarcheck:
+	./mvnw versions:display-dependency-updates
+
+plugincheck:
+	./mvnw versions:display-plugin-updates
+
+versioncheck: jarcheck plugincheck

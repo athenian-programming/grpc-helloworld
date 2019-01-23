@@ -42,6 +42,9 @@ python-client:
 python-server:
 	python3 src/main/python/helloworld__server.py
 
+versioncheck:
+	./gradlew dependencyUpdates
+
 # Maven targets
 mvn-build:
 	./mvnw -DskipTests=true clean package
@@ -49,13 +52,13 @@ mvn-build:
 mvn-clean:
 	./mvnw -DskipTests=true clean
 
-tree:
+mvn-tree:
 	./mvnw dependency:tree
 
-jarcheck:
+mvn-jarcheck:
 	./mvnw versions:display-dependency-updates
 
-plugincheck:
+mvn-plugincheck:
 	./mvnw versions:display-plugin-updates
 
-versioncheck: jarcheck plugincheck
+mvn-versioncheck: mvn-jarcheck mvn-plugincheck

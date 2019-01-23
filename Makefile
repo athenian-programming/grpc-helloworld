@@ -1,10 +1,16 @@
-default: all
+default: stubs bin
 
-all: clean stubs bin
+all: stubs bin
 
 stubs: java-stubs python-stubs
 
 bin: java-bin
+
+java: java-stubs java-bin
+
+python: python-stubs
+
+dart: dart-stubs
 
 clean:
 	./gradlew clean
@@ -19,6 +25,10 @@ python-stubs:
 	mkdir -p ./build/generated/source/python
 	touch ./build/generated/source/python/__init__.py
 	python3 -m grpc_tools.protoc -I. --python_out=./build/generated/source/python --grpc_python_out=./build/generated/source/python --proto_path=./src/main/proto helloworld.proto
+
+dart-stubs:
+	mkdir -p build/generated/source/dart/lib/src/generated
+	protoc -I=src/main/proto --dart_out=grpc:build/generated/source/dart/lib/src/generated --proto_path=./src/main/proto helloworld.proto
 
 java-client:
 	build/install/HelloWorldGrpc/bin/helloworld-client

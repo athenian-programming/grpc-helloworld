@@ -1,11 +1,10 @@
 plugins {
     id 'java'
+
     // Provide convenience executables for trying out the examples.
     id 'application'
-    // ASSUMES GRADLE 2.12 OR HIGHER. Use plugin version 0.7.5 with earlier gradle versions
-    id 'com.google.protobuf' version '0.8.5'
-    // Generate IntelliJ IDEA's .idea & .iml project files
-    id 'idea'
+
+    id 'com.google.protobuf' version '0.8.8'
 }
 
 group 'org.athenian'

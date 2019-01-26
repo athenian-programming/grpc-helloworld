@@ -33,7 +33,8 @@ def main():
 
 
 def sayHello(grpcInfo, name):
-    response = grpcInfo.stub.SayHello(helloworld_pb2.HelloRequest(name=name))
+    data = helloworld_pb2.HelloRequest(name=name)
+    response = grpcInfo.stub.SayHello(data)
     print("sayHello() response: {}".format(response.message))
 
 

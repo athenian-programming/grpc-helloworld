@@ -22,10 +22,6 @@ repositories {
     mavenLocal()
 }
 
-wrapper {
-    gradleVersion = '5.1.1'
-}
-
 def grpcVersion = '1.18.0'
 def protobufVersion = '3.5.1'
 def protocVersion = '3.5.1-1'

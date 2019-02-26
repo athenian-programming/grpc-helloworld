@@ -9,13 +9,16 @@ import org.athenain.helloworld.GreeterGrpc;
 import org.athenain.helloworld.HelloReply;
 import org.athenain.helloworld.HelloRequest;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.String.format;
 
-public class HelloWorldClient {
+public class HelloWorldClient
+    implements Closeable {
   private final ManagedChannel                  channel;
   private final GreeterGrpc.GreeterBlockingStub blockingStub;
   private final GreeterGrpc.GreeterStub         asyncStub;
@@ -36,8 +39,7 @@ public class HelloWorldClient {
 
   public static void main(String... args)
       throws Exception {
-    HelloWorldClient client = new HelloWorldClient("localhost", 50051);
-    try {
+    try (HelloWorldClient client = new HelloWorldClient("localhost", 50051)) {
       /* Access a service running on the local machine on port 50051 */
       String name = "world";
       if (args.length > 0) {
@@ -48,14 +50,22 @@ public class HelloWorldClient {
       client.sayHelloWithManyReplies(name);
       client.sayHelloWithManyRequestsAndReplies(name);
     }
-    finally {
-      client.shutdown();
-    }
   }
 
   public void shutdown()
       throws InterruptedException {
     channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
+  }
+
+  @Override
+  public void close()
+      throws IOException {
+    try {
+      shutdown();
+    }
+    catch (InterruptedException e) {
+      throw new IOException(e.getMessage());
+    }
   }
 
   public void sayHello(String name) {
@@ -65,12 +75,11 @@ public class HelloWorldClient {
     HelloReply response;
     try {
       response = this.blockingStub.sayHello(request);
+      System.out.println(format("sayHello() response: %s", response.getMessage()));
     }
     catch (StatusRuntimeException e) {
       System.out.println(format("sayHello() failed: %s", e.getStatus()));
-      return;
     }
-    System.out.println(format("sayHello() response: %s", response.getMessage()));
   }
 
   public void sayHelloWithManyRequests(String name) {

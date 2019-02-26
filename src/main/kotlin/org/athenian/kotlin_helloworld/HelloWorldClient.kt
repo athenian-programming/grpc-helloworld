@@ -8,41 +8,42 @@ import io.grpc.stub.StreamObserver
 import org.athenain.helloworld.GreeterGrpc
 import org.athenain.helloworld.HelloReply
 import org.athenain.helloworld.HelloRequest
+import java.io.Closeable
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-class HelloWorldClient internal constructor(private val channel: ManagedChannel) {
+class HelloWorldClient internal constructor(private val channel: ManagedChannel) : Closeable {
     private val blockingStub: GreeterGrpc.GreeterBlockingStub = GreeterGrpc.newBlockingStub(channel)
     private val asyncStub: GreeterGrpc.GreeterStub = GreeterGrpc.newStub(channel)
 
-    constructor(host: String, port: Int = 50051) : this(ManagedChannelBuilder.forAddress(host, port)
-                                                                // Channels are secure by default (via SSL/TLS). For the example we disable TLS to avoid
-                                                                // needing certificates.
-                                                                .usePlaintext()
-                                                                .build())
+    constructor(host: String, port: Int = 50051) :
+            this(ManagedChannelBuilder.forAddress(host, port)
+                         // Channels are secure by default (via SSL/TLS). For the example we disable TLS to avoid
+                         // needing certificates.
+                         .usePlaintext()
+                         .build())
 
     @Throws(InterruptedException::class)
     fun shutdown() {
         channel.shutdown().awaitTermination(5, TimeUnit.SECONDS)
     }
 
+    override fun close() {
+        shutdown()
+    }
+
     fun sayHello(name: String) {
-        val request = HelloRequest.newBuilder()
-                .setName(name)
-                .build()
+        val request = HelloRequest.newBuilder().setName(name).build()
         val response: HelloReply
         try {
             response = this.blockingStub.sayHello(request)
+            println("sayHello() response: ${response.message}")
         } catch (e: StatusRuntimeException) {
             println("sayHello() failed: ${e.status}")
-            return
         }
-
-        println("sayHello() response: ${response.message}")
     }
 
     fun sayHelloWithManyRequests(name: String) {
-
         val finishLatch = CountDownLatch(1)
 
         val responseObserver = object : StreamObserver<HelloReply> {
@@ -91,18 +92,10 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
         } catch (e: InterruptedException) {
             e.printStackTrace()
         }
-
     }
 
     fun sayHelloWithManyReplies(name: String) {
-
-        val request =
-                HelloRequest.newBuilder()
-                        .run {
-                            setName(name)
-                            build()
-                        }
-
+        val request = HelloRequest.newBuilder().setName(name).build()
         val replies = blockingStub.sayHelloWithManyReplies(request)
 
         println("sayHelloWithManyReplies() responses:")
@@ -111,9 +104,7 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
     }
 
     fun sayHelloWithManyRequestsAndReplies(name: String) {
-
         val finishLatch = CountDownLatch(1)
-
         val responseObserver =
                 object : StreamObserver<HelloReply> {
                     override fun onNext(reply: HelloReply) {
@@ -135,9 +126,7 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
 
         try {
             for (i in 0..4) {
-                val request = HelloRequest.newBuilder()
-                        .setName("$name-$i")
-                        .build()
+                val request = HelloRequest.newBuilder().setName("$name-$i").build()
                 println("sayHelloWithManyRequestsAndReplies() request: ${request.name}")
                 requestObserver.onNext(request)
 
@@ -167,23 +156,21 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            val client = HelloWorldClient("localhost")
-            try {
-                /* Access a service running on the local machine on port 50051 */
-                val name =
-                        if (args.isNotEmpty())
-                            args[0] /* Use the arg as the name to greet if provided */
-                        else
-                            "world"
-                with(client) {
-                    sayHello(name)
-                    sayHelloWithManyRequests(name)
-                    sayHelloWithManyReplies(name)
-                    sayHelloWithManyRequestsAndReplies(name)
-                }
-            } finally {
-                client.shutdown()
-            }
+            HelloWorldClient("localhost")
+                    .use {
+                        /* Access a service running on the local machine on port 50051 */
+                        val name =
+                                if (args.isNotEmpty())
+                                    args[0] /* Use the arg as the name to greet if provided */
+                                else
+                                    "world"
+                        with(it) {
+                            sayHello(name)
+                            sayHelloWithManyRequests(name)
+                            sayHelloWithManyReplies(name)
+                            sayHelloWithManyRequestsAndReplies(name)
+                        }
+                    }
         }
     }
 }

@@ -1,6 +1,6 @@
 default: stubs bin
 
-all: stubs bin
+all: stubs java-build bin
 
 stubs: java-stubs python-stubs
 
@@ -12,6 +12,9 @@ python: python-stubs
 
 dart: dart-stubs
 
+java-build:
+	./gradlew assemble build
+
 clean:
 	./gradlew clean
 
@@ -19,7 +22,7 @@ java-bin:
 	./gradlew install
 
 java-stubs:
-	./gradlew assemble build
+	./gradlew generateProto
 
 python-stubs:
 	mkdir -p ./build/generated/source/python
@@ -31,10 +34,16 @@ dart-stubs:
 	protoc -I=src/main/proto --dart_out=grpc:build/generated/source/dart/lib/src/generated --proto_path=./src/main/proto helloworld.proto
 
 java-client:
-	build/install/HelloWorldGrpc/bin/helloworld-client
+	build/install/HelloWorldGrpc/bin/java-helloworld-client
 
 java-server:
-	build/install/HelloWorldGrpc/bin/helloworld-server
+	build/install/HelloWorldGrpc/bin/java-helloworld-server
+
+kotlin-client:
+	build/install/HelloWorldGrpc/bin/kotlin-helloworld-client
+
+kotlin-server:
+	build/install/HelloWorldGrpc/bin/kotlin-helloworld-server
 
 python-client:
 	python3 src/main/python/helloworld_client.py
@@ -45,20 +54,3 @@ python-server:
 versioncheck:
 	./gradlew dependencyUpdates
 
-# Maven targets
-mvn-build:
-	./mvnw -DskipTests=true clean package
-
-mvn-clean:
-	./mvnw -DskipTests=true clean
-
-mvn-tree:
-	./mvnw dependency:tree
-
-mvn-jarcheck:
-	./mvnw versions:display-dependency-updates
-
-mvn-plugincheck:
-	./mvnw versions:display-plugin-updates
-
-mvn-versioncheck: mvn-jarcheck mvn-plugincheck

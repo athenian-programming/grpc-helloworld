@@ -1,7 +1,10 @@
-package org.athenian.examples.helloworld;
+package org.athenian.java_helloworld;
 
 import com.google.common.collect.Lists;
 import io.grpc.stub.StreamObserver;
+import org.athenain.helloworld.GreeterGrpc;
+import org.athenain.helloworld.HelloReply;
+import org.athenain.helloworld.HelloRequest;
 
 import java.util.List;
 import java.util.stream.IntStream;

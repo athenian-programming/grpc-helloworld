@@ -1,10 +1,13 @@
-package org.athenian.examples.helloworld;
+package org.athenian.java_helloworld;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
+import org.athenain.helloworld.GreeterGrpc;
+import org.athenain.helloworld.HelloReply;
+import org.athenain.helloworld.HelloRequest;
 
 import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
@@ -67,7 +70,7 @@ public class HelloWorldClient {
       System.out.println(format("sayHello() failed: %s", e.getStatus()));
       return;
     }
-    System.out.println(format("sayHello() response: %s\n", response.getMessage()));
+    System.out.println(format("sayHello() response: %s", response.getMessage()));
   }
 
   public void sayHelloWithManyRequests(String name) {
@@ -78,7 +81,7 @@ public class HelloWorldClient {
         new StreamObserver<HelloReply>() {
           @Override
           public void onNext(HelloReply reply) {
-            System.out.println(format("sayHelloWithManyRequests() response: %s\n", reply.getMessage()));
+            System.out.println(format("sayHelloWithManyRequests() response: %s", reply.getMessage()));
           }
 
           @Override
@@ -137,9 +140,7 @@ public class HelloWorldClient {
     Iterator<HelloReply> replies = blockingStub.sayHelloWithManyReplies(request);
 
     System.out.println("sayHelloWithManyReplies() responses:");
-    replies.forEachRemaining((reply) -> {
-      System.out.println(reply.getMessage());
-    });
+    replies.forEachRemaining((reply) -> System.out.println(reply.getMessage()));
     System.out.println();
   }
 

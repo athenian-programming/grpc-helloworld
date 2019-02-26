@@ -1,11 +1,10 @@
 plugins {
-    id 'java'
-
     // Provide convenience executables for trying out the examples.
     id 'application'
-
     id 'com.google.protobuf' version '0.8.8'
-
+    id 'idea'
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.21'
     // From https://github.com/ben-manes/gradle-versions-plugin
     id "com.github.ben-manes.versions" version "0.20.0"
 }
@@ -28,6 +27,10 @@ def protocVersion = '3.5.1-1'
 def annotationVersion = "1.3.2"
 
 dependencies {
+    def kotlinVersion = plugins.findPlugin("org.jetbrains.kotlin.jvm").kotlinPluginVersion
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
+
+    implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
     implementation "io.grpc:grpc-protobuf:${grpcVersion}"
     implementation "io.grpc:grpc-stub:${grpcVersion}"
     compileOnly "javax.annotation:javax.annotation-api:${annotationVersion}"
@@ -35,7 +38,6 @@ dependencies {
     // examples/advanced need this for JsonFormat
     implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
 
-    runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
 
     testImplementation "io.grpc:grpc-testing:${grpcVersion}"
     testImplementation "junit:junit:4.12"
@@ -61,30 +63,59 @@ sourceSets {
     main {
         java {
             srcDirs 'src/main/java'
+            srcDirs 'src/main/kotlin'
             srcDirs 'build/generated/source/proto/main/grpc'
             srcDirs 'build/generated/source/proto/main/java'
         }
     }
 }
 
+compileKotlin.dependsOn ':generateProto'
+
 startScripts.enabled = false
 
-task helloWorldServer(type: CreateStartScripts) {
-    mainClassName = 'org.athenian.examples.helloworld.HelloWorldServer'
-    applicationName = 'helloworld-server'
+task java_helloWorldServer(type: CreateStartScripts) {
+    mainClassName = 'org.athenian.java_helloworld.HelloWorldServer'
+    applicationName = 'java-helloworld-server'
     outputDir = new File(project.buildDir, 'tmp')
     classpath = startScripts.classpath
 }
 
-task helloWorldClient(type: CreateStartScripts) {
-    mainClassName = 'org.athenian.examples.helloworld.HelloWorldClient'
-    applicationName = 'helloworld-client'
+task java_helloWorldClient(type: CreateStartScripts) {
+    mainClassName = 'org.athenian.java_helloworld.HelloWorldClient'
+    applicationName = 'java-helloworld-client'
+    outputDir = new File(project.buildDir, 'tmp')
+    classpath = startScripts.classpath
+}
+
+task kotlin_helloWorldServer(type: CreateStartScripts) {
+    mainClassName = 'org.athenian.kotlin_helloworld.HelloWorldServer'
+    applicationName = 'kotlin-helloworld-server'
+    outputDir = new File(project.buildDir, 'tmp')
+    classpath = startScripts.classpath
+}
+
+task kotlin_helloWorldClient(type: CreateStartScripts) {
+    mainClassName = 'org.athenian.kotlin_helloworld.HelloWorldClient'
+    applicationName = 'kotlin-helloworld-client'
     outputDir = new File(project.buildDir, 'tmp')
     classpath = startScripts.classpath
 }
 
 applicationDistribution.into('bin') {
-    from(helloWorldServer)
-    from(helloWorldClient)
+    from(java_helloWorldServer)
+    from(java_helloWorldClient)
+    from(kotlin_helloWorldServer)
+    from(kotlin_helloWorldClient)
     fileMode = 0755
+}
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }

@@ -1,78 +1,21 @@
 # gRPC HelloWorld Example 
 
-## Gradle Instructions
-Generate the `helloworld` stubs with:
+## Java and Kotlin Setup
 
-```
-$ ./gradlew assemble build
-```
+Generate the stubs with: `./gradlew generateProto`
 
-Build the `helloworld` apps with:
-
-```
-$ ./gradlew install
-```
+Build the apps with: `./gradlew install`
 
 This creates the shell scripts:
 
-* ./build/install/HelloWorldGrpc/bin/helloworld-client
-* ./build/install/HelloWorldGrpc/bin/helloworld-server
+* ./build/install/HelloWorldGrpc/bin/java-helloworld-client
+* ./build/install/HelloWorldGrpc/bin/java-helloworld-server
+* ./build/install/HelloWorldGrpc/bin/kotlin-helloworld-client
+* ./build/install/HelloWorldGrpc/bin/kotlin-helloworld-server
 
-## Maven Instructions
-Generate the `helloworld` stubs with:
+## Python Setup
 
-```
-$ ./mvn clean protoc:compile protoc:compile-custom
-```
+Generate the stubs with: `make python-stubs`
 
-Build the `helloworld` apps with:
-
-```
-$ ./mvn clean package
-```
-
-This creates the shell scripts: 
-
-* ./target/bin/helloserver.sh
-* ./target/bin/helloclient.sh
-
-and the uber-jars:
- 
-* ./target/helloserver-1.0-jar-with-dependencies.jar
-* ./target/helloclient-1.0-jar-with-dependencies.jar
- 
-Invoke the uber-jars with:
-
-```
-$ java -jar ./target/helloserver-1.0-jar-with-dependencies.jar
-```
-
-```
-$ java -jar ./target/helloclient-1.0-jar-with-dependencies.jar
-```
-
-Build the docker images with:
-
-```
-$ ./bin/build-docker-images.sh
-```
-
-Run the server as a docker instance with:
-
-```
-$ docker run --name helloserver -p 50051:50051 -d cinch/helloserver:0.1.0
-```
-
-Determine the IP address of your docker machine with:
-
-```
-$ docker-machine env default | grep DOCKER_HOST
-```
-
-Connect to the server docker instance using the docker IP address with:
-
-```
-$ java -jar ./target/helloclient-1.0-jar-with-dependencies.jar --name test --times 10 --host 192.168.99.100
-```
 
 

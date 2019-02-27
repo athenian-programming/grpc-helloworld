@@ -11,32 +11,37 @@ class GreeterImpl : GreeterGrpc.GreeterImplBase() {
         val reply = HelloReply.newBuilder()
                 .setMessage("Hello ${request.name}")
                 .build()
-        responseObserver.onNext(reply)
-        responseObserver.onCompleted()
+        responseObserver
+                .apply {
+                    onNext(reply)
+                    onCompleted()
+                }
     }
 
-    override fun sayHelloWithManyRequests(responseObserver: StreamObserver<HelloReply>): StreamObserver<HelloRequest> {
-        return object : StreamObserver<HelloRequest> {
-            val names: MutableList<String> = mutableListOf()
+    override fun sayHelloWithManyRequests(responseObserver: StreamObserver<HelloReply>) =
+            object : StreamObserver<HelloRequest> {
+                val names: MutableList<String> = mutableListOf()
 
-            override fun onNext(request: HelloRequest) {
-                names.add(request.name)
-            }
+                override fun onNext(request: HelloRequest) {
+                    names.add(request.name)
+                }
 
-            override fun onError(t: Throwable) {
-                println("Encountered error in sayHelloWithManyRequests()")
-                t.printStackTrace()
-            }
+                override fun onError(t: Throwable) {
+                    println("Encountered error in sayHelloWithManyRequests()")
+                    t.printStackTrace()
+                }
 
-            override fun onCompleted() {
-                val msg = HelloReply.newBuilder()
-                        .setMessage("Hello ${names.joinToString(", ")}")
-                        .build()
-                responseObserver.onNext(msg)
-                responseObserver.onCompleted()
+                override fun onCompleted() {
+                    val msg = HelloReply.newBuilder()
+                            .setMessage("Hello ${names.joinToString(", ")}")
+                            .build()
+                    responseObserver
+                            .apply {
+                                onNext(msg)
+                                onCompleted()
+                            }
+                }
             }
-        }
-    }
 
     override fun sayHelloWithManyReplies(request: HelloRequest, responseObserver: StreamObserver<HelloReply>) {
         IntRange(0, 5)

@@ -157,19 +157,18 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
         @JvmStatic
         fun main(args: Array<String>) {
             HelloWorldClient("localhost")
-                    .use {
+                    .apply {
                         /* Access a service running on the local machine on port 50051 */
                         val name =
                                 if (args.isNotEmpty())
                                     args[0] /* Use the arg as the name to greet if provided */
                                 else
                                     "world"
-                        with(it) {
-                            sayHello(name)
-                            sayHelloWithManyRequests(name)
-                            sayHelloWithManyReplies(name)
-                            sayHelloWithManyRequestsAndReplies(name)
-                        }
+
+                        sayHello(name)
+                        sayHelloWithManyRequests(name)
+                        sayHelloWithManyReplies(name)
+                        sayHelloWithManyRequestsAndReplies(name)
                     }
         }
     }

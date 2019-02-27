@@ -38,10 +38,11 @@ class HelloWorldServer {
         @Throws(IOException::class, InterruptedException::class)
         @JvmStatic
         fun main(args: Array<String>) {
-            with(HelloWorldServer()) {
-                start()
-                blockUntilShutdown()
-            }
+            HelloWorldServer()
+                    .apply {
+                        start()
+                        blockUntilShutdown()
+                    }
         }
     }
 }

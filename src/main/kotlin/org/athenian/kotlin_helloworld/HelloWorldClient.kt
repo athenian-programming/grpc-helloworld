@@ -1,16 +1,23 @@
 package org.athenian.kotlin_helloworld
 
+import io.grpc.ConnectivityState
 import io.grpc.ManagedChannel
 import io.grpc.ManagedChannelBuilder
 import io.grpc.Status
 import io.grpc.StatusRuntimeException
 import io.grpc.stub.StreamObserver
+import io.opencensus.contrib.grpc.metrics.RpcViews
+import io.opencensus.exporter.stats.prometheus.PrometheusStatsCollector
+import io.opencensus.trace.Tracing
+import io.prometheus.client.exporter.HTTPServer
 import org.athenain.helloworld.GreeterGrpc
 import org.athenain.helloworld.HelloReply
 import org.athenain.helloworld.HelloRequest
 import java.io.Closeable
+import java.lang.Thread.sleep
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+
 
 class HelloWorldClient internal constructor(private val channel: ManagedChannel) : Closeable {
     private val blockingStub: GreeterGrpc.GreeterBlockingStub = GreeterGrpc.newBlockingStub(channel)
@@ -23,6 +30,12 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
                          .usePlaintext()
                          .build())
 
+    init {
+        channel.notifyWhenStateChanged(ConnectivityState.CONNECTING) { println("Connecting: ${channel.getState(false)}") }
+        channel.notifyWhenStateChanged(ConnectivityState.READY) { println("Ready: ${channel.getState(false)}") }
+        channel.notifyWhenStateChanged(ConnectivityState.IDLE) { println("Idle: ${channel.getState(false)}") }
+    }
+
     @Throws(InterruptedException::class)
     fun shutdown() {
         channel.shutdown().awaitTermination(5, TimeUnit.SECONDS)
@@ -33,41 +46,44 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
     }
 
     fun sayHello(name: String) {
-        val request = HelloRequest.newBuilder().setName(name).build()
-        val response: HelloReply
-        try {
-            response = this.blockingStub.sayHello(request)
-            println("sayHello() response: ${response.message}")
-        } catch (e: StatusRuntimeException) {
-            println("sayHello() failed: ${e.status}")
-        }
+        tracer.spanBuilder("helloworld-grpc.sayHello").startScopedSpan()
+                .use {
+                    try {
+                        val request = HelloRequest.newBuilder().setName(name).build()
+                        val response = this.blockingStub.sayHello(request)
+                        println("sayHello() response: ${response.message}")
+                    } catch (e: StatusRuntimeException) {
+                        println("sayHello() failed: ${e.status}")
+                    }
+                }
     }
 
     fun sayHelloWithManyRequests(name: String) {
         val finishLatch = CountDownLatch(1)
 
-        val responseObserver = object : StreamObserver<HelloReply> {
-            override fun onNext(reply: HelloReply) {
-                println("sayHelloWithManyRequests() response: ${reply.message}")
-            }
+        val responseObserver =
+                object : StreamObserver<HelloReply> {
+                    override fun onNext(reply: HelloReply) {
+                        println("sayHelloWithManyRequests() response: ${reply.message}")
+                    }
 
-            override fun onError(t: Throwable) {
-                val status = Status.fromThrowable(t)
-                println("sayHelloWithMayRequests() failed: $status")
-                finishLatch.countDown()
-            }
+                    override fun onError(t: Throwable) {
+                        val status = Status.fromThrowable(t)
+                        println("sayHelloWithMayRequests() failed: $status")
+                        finishLatch.countDown()
+                    }
 
-            override fun onCompleted() {
-                finishLatch.countDown()
-            }
-        }
+                    override fun onCompleted() {
+                        finishLatch.countDown()
+                    }
+                }
 
         val requestObserver = asyncStub.sayHelloWithManyRequests(responseObserver)
 
         try {
-            for (i in 0..4) {
+            repeat(5) {
                 val request = HelloRequest.newBuilder()
-                        .setName("$name-$i")
+                        .setName("$name-$it")
                         .build()
                 requestObserver.onNext(request)
 
@@ -125,8 +141,8 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
         val requestObserver = asyncStub.sayHelloWithManyRequestsAndReplies(responseObserver)
 
         try {
-            for (i in 0..4) {
-                val request = HelloRequest.newBuilder().setName("$name-$i").build()
+            repeat(5) {
+                val request = HelloRequest.newBuilder().setName("$name-$it").build()
                 println("sayHelloWithManyRequestsAndReplies() request: ${request.name}")
                 requestObserver.onNext(request)
 
@@ -154,8 +170,15 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
     }
 
     companion object {
+        private val tracer = Tracing.getTracer()
+
         @JvmStatic
         fun main(args: Array<String>) {
+
+            PrometheusStatsCollector.createAndRegister()
+            RpcViews.registerClientGrpcViews()
+            val http = HTTPServer("localhost", 8889, true)
+
             HelloWorldClient("localhost")
                     .apply {
                         /* Access a service running on the local machine on port 50051 */
@@ -165,11 +188,17 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
                                 else
                                     "world"
 
-                        sayHello(name)
-                        sayHelloWithManyRequests(name)
-                        sayHelloWithManyReplies(name)
-                        sayHelloWithManyRequestsAndReplies(name)
+                        repeat(300) {
+                            sayHello(name)
+                            sayHelloWithManyRequests(name)
+                            sayHelloWithManyReplies(name)
+                            sayHelloWithManyRequestsAndReplies(name)
+
+                            sleep(1000)
+                        }
                     }
+
+            http.stop()
         }
     }
 }

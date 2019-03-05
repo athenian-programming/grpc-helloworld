@@ -116,6 +116,7 @@ applicationDistribution.into('bin') {
     from(kotlin_helloWorldClient)
     fileMode = 0755
 }
+
 compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"

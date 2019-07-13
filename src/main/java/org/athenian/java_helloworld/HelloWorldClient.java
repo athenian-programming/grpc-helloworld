@@ -75,7 +75,7 @@ public class HelloWorldClient
     HelloReply response;
     try {
       response = this.blockingStub.sayHello(request);
-      System.out.println(format("sayHello() response: %s", response.getMessage()));
+      System.out.println(format("sayHello() response: %s\n", response.getMessage()));
     }
     catch (StatusRuntimeException e) {
       System.out.println(format("sayHello() failed: %s", e.getStatus()));
@@ -90,7 +90,7 @@ public class HelloWorldClient
         new StreamObserver<HelloReply>() {
           @Override
           public void onNext(HelloReply reply) {
-            System.out.println(format("sayHelloWithManyRequests() response: %s", reply.getMessage()));
+            System.out.println(format("sayHelloWithManyRequests() response: %s\n", reply.getMessage()));
           }
 
           @Override

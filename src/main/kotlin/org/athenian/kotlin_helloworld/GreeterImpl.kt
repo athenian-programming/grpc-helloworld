@@ -9,13 +9,13 @@ class GreeterImpl : GreeterGrpc.GreeterImplBase() {
 
     override fun sayHello(request: HelloRequest, responseObserver: StreamObserver<HelloReply>) {
 
-        val scope = HelloWorldServer.tracer.spanBuilder("$PREFIX.sayHello").startScopedSpan()!!
+        //val scope = HelloWorldServer.tracer.spanBuilder("$PREFIX.sayHello").startScopedSpan()!!
 
         val reply = HelloReply.newBuilder().setMessage("Hello ${request.name}").build()
         responseObserver
                 .apply {
                     onNext(reply)
-                    scope.close()
+                    //scope.close()
                     onCompleted()
                 }
     }
@@ -23,14 +23,14 @@ class GreeterImpl : GreeterGrpc.GreeterImplBase() {
     override fun sayHelloWithManyRequests(responseObserver: StreamObserver<HelloReply>) =
             object : StreamObserver<HelloRequest> {
                 val names: MutableList<String> = mutableListOf()
-                val scope = HelloWorldServer.tracer.spanBuilder("$PREFIX.sayHelloWithManyRequests").startScopedSpan()!!
+                //val scope = HelloWorldServer.tracer.spanBuilder("$PREFIX.sayHelloWithManyRequests").startScopedSpan()!!
 
                 override fun onNext(request: HelloRequest) {
                     names.add(request.name)
                 }
 
                 override fun onError(t: Throwable) {
-                    scope.close()
+                    //scope.close()
                     println("Encountered error in sayHelloWithManyRequests()")
                     t.printStackTrace()
                 }
@@ -40,14 +40,14 @@ class GreeterImpl : GreeterGrpc.GreeterImplBase() {
                     responseObserver
                             .apply {
                                 onNext(msg)
-                                scope.close()
+                                //scope.close()
                                 onCompleted()
                             }
                 }
             }
 
     override fun sayHelloWithManyReplies(request: HelloRequest, responseObserver: StreamObserver<HelloReply>) {
-        val scope = HelloWorldServer.tracer.spanBuilder("$PREFIX.sayHelloWithManyReplies").startScopedSpan()!!
+        //val scope = HelloWorldServer.tracer.spanBuilder("$PREFIX.sayHelloWithManyReplies").startScopedSpan()!!
         IntRange(0, 5)
                 .forEach { i ->
                     val reply = HelloReply.newBuilder()
@@ -55,13 +55,13 @@ class GreeterImpl : GreeterGrpc.GreeterImplBase() {
                             .build()
                     responseObserver.onNext(reply)
                 }
-        scope.close()
+        //scope.close()
         responseObserver.onCompleted()
     }
 
     override fun sayHelloWithManyRequestsAndReplies(responseObserver: StreamObserver<HelloReply>) =
             object : StreamObserver<HelloRequest> {
-                val scope = HelloWorldServer.tracer.spanBuilder("$PREFIX.sayHelloWithManyRequestsAndReplies").startScopedSpan()!!
+                //val scope = HelloWorldServer.tracer.spanBuilder("$PREFIX.sayHelloWithManyRequestsAndReplies").startScopedSpan()!!
 
                 override fun onNext(request: HelloRequest) {
                     IntRange(0, 5)
@@ -74,18 +74,18 @@ class GreeterImpl : GreeterGrpc.GreeterImplBase() {
                 }
 
                 override fun onError(t: Throwable) {
-                    scope.close()
+                    //scope.close()
                     println("Encountered error in sayHelloWithManyRequestsAndReplies()")
                     t.printStackTrace()
                 }
 
                 override fun onCompleted() {
-                    scope.close()
+                    //scope.close()
                     responseObserver.onCompleted()
                 }
             }
 
     companion object {
-        const val PREFIX = "helloworld-grpc.GreeterImpl"
+        const val PREFIX = "grpc-helloworld.GreeterImpl"
     }
 }

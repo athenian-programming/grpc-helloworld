@@ -4,6 +4,7 @@ import io.grpc.Server
 import io.grpc.ServerBuilder
 import io.opencensus.contrib.grpc.metrics.RpcViews
 import io.opencensus.exporter.stats.prometheus.PrometheusStatsCollector
+import io.opencensus.trace.Tracer
 import io.opencensus.trace.Tracing
 import io.prometheus.client.exporter.HTTPServer
 import java.io.IOException
@@ -40,7 +41,7 @@ class HelloWorldServer {
 
     companion object {
         const val port = 50051
-        val tracer = Tracing.getTracer()
+        val tracer: Tracer = Tracing.getTracer()
 
         @Throws(IOException::class, InterruptedException::class)
         @JvmStatic

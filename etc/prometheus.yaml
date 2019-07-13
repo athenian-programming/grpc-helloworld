@@ -2,10 +2,10 @@ global:
   scrape_interval: 2s
 
   external_labels:
-    monitor: 'helloworld-grpc'
+    monitor: 'grpc-helloworld'
 
 scrape_configs:
-  - job_name: 'helloworld-grpc'
+  - job_name: 'grpc-helloworld'
 
     scrape_interval: 2s
 

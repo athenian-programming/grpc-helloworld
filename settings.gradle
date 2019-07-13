@@ -7,5 +7,5 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'HelloWorldGrpc'
+rootProject.name = 'grpc-helloworld'
 

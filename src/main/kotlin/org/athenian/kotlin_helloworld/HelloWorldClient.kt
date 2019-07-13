@@ -46,7 +46,7 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
     }
 
     fun sayHello(name: String) {
-        tracer.spanBuilder("helloworld-grpc.sayHello").startScopedSpan()
+        tracer.spanBuilder("grpc-helloworld.sayHello").startScopedSpan()
                 .use {
                     try {
                         val request = HelloRequest.newBuilder().setName(name).build()
@@ -188,7 +188,7 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
                                 else
                                     "world"
 
-                        repeat(300) {
+                        repeat(10) {
                             sayHello(name)
                             sayHelloWithManyRequests(name)
                             sayHelloWithManyReplies(name)

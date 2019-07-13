@@ -31,7 +31,7 @@ public class HelloWorldClient
                               .build());
   }
 
-  HelloWorldClient(ManagedChannel channel) {
+  public HelloWorldClient(ManagedChannel channel) {
     this.channel = channel;
     this.blockingStub = GreeterGrpc.newBlockingStub(channel);
     this.asyncStub = GreeterGrpc.newStub(channel);

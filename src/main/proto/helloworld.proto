@@ -5,8 +5,17 @@ option java_package = "org.athenain.helloworld";
 option java_outer_classname = "HelloWorldProto";
 option objc_class_prefix = "HLW";
 
-
 package helloworld;
+
+// The request message containing the user's name.
+message HelloRequest {
+    string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+    string message = 1;
+}
 
 // The Greeter service definition.
 service Greeter {
@@ -21,14 +30,4 @@ service Greeter {
 
     rpc SayHelloWithManyRequestsAndReplies (stream HelloRequest) returns (stream HelloReply) {
     }
-}
-
-// The request message containing the user's name.
-message HelloRequest {
-    string name = 1;
-}
-
-// The response message containing the greetings
-message HelloReply {
-    string message = 1;
 }

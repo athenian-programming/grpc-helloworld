@@ -42,9 +42,10 @@ public class HelloWorldClient
     try (HelloWorldClient client = new HelloWorldClient("localhost", 50051)) {
       /* Access a service running on the local machine on port 50051 */
       String name = "world";
-      if (args.length > 0) {
+
+      if (args.length > 0)
         name = args[0]; /* Use the arg as the name to greet if provided */
-      }
+
       client.sayHello(name);
       client.sayHelloWithManyRequests(name);
       client.sayHelloWithManyReplies(name);

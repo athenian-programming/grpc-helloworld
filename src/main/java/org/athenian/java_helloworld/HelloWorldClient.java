@@ -39,8 +39,9 @@ public class HelloWorldClient
 
   public static void main(String... args)
       throws Exception {
+
+    /* Access a service running on the local machine on port 50051 */
     try (HelloWorldClient client = new HelloWorldClient("localhost", 50051)) {
-      /* Access a service running on the local machine on port 50051 */
       String name = "world";
 
       if (args.length > 0)

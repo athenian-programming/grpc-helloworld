@@ -60,7 +60,6 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
 
     fun sayHelloWithManyRequests(name: String) {
         val finishLatch = CountDownLatch(1)
-
         val responseObserver =
                 object : StreamObserver<HelloReply> {
                     override fun onNext(reply: HelloReply) {
@@ -115,7 +114,7 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
         val replies = blockingStub.sayHelloWithManyReplies(request)
 
         println("sayHelloWithManyReplies() responses:")
-        replies.forEachRemaining { reply -> println(reply.message) }
+        replies.forEach { reply -> println(reply.message) }
         println()
     }
 
@@ -179,20 +178,17 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
             RpcViews.registerClientGrpcViews()
             val http = HTTPServer("localhost", 8889, true)
 
-            HelloWorldClient("localhost")
-                    .apply {
-                        /* Access a service running on the local machine on port 50051 */
-                        val name =
-                                if (args.isNotEmpty())
-                                    args[0] /* Use the arg as the name to greet if provided */
-                                else
-                                    "world"
+            /* Access a service running on the local machine on port 50051 */
+            /* Use the arg as the name to greet if provided */
+            val name = if (args.isNotEmpty()) args[0] else "world"
 
+            HelloWorldClient("localhost")
+                    .use { client ->
                         repeat(10) {
-                            sayHello(name)
-                            sayHelloWithManyRequests(name)
-                            sayHelloWithManyReplies(name)
-                            sayHelloWithManyRequestsAndReplies(name)
+                            client.sayHello(name)
+                            client.sayHelloWithManyRequests(name)
+                            client.sayHelloWithManyReplies(name)
+                            client.sayHelloWithManyRequestsAndReplies(name)
 
                             sleep(1000)
                         }

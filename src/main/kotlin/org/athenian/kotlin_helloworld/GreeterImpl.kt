@@ -8,16 +8,13 @@ import org.athenain.helloworld.HelloRequest
 class GreeterImpl : GreeterGrpc.GreeterImplBase() {
 
     override fun sayHello(request: HelloRequest, responseObserver: StreamObserver<HelloReply>) {
-
         //val scope = HelloWorldServer.tracer.spanBuilder("$PREFIX.sayHello").startScopedSpan()!!
-
-        val reply = HelloReply.newBuilder().setMessage("Hello ${request.name}").build()
-        responseObserver
-                .apply {
-                    onNext(reply)
-                    //scope.close()
-                    onCompleted()
-                }
+        val reply = HelloReply.newBuilder().apply { message = "Hello ${request.name}" }.build()
+        responseObserver.apply {
+            onNext(reply)
+            //scope.close()
+            onCompleted()
+        }
     }
 
     override fun sayHelloWithManyRequests(responseObserver: StreamObserver<HelloReply>) =
@@ -36,7 +33,10 @@ class GreeterImpl : GreeterGrpc.GreeterImplBase() {
                 }
 
                 override fun onCompleted() {
-                    val msg = HelloReply.newBuilder().setMessage("Hello ${names.joinToString(", ")}").build()
+                    val msg =
+                            HelloReply.newBuilder()
+                                    .apply { message = "Hello ${names.joinToString(", ")}" }
+                                    .build()
                     responseObserver
                             .apply {
                                 onNext(msg)
@@ -48,13 +48,13 @@ class GreeterImpl : GreeterGrpc.GreeterImplBase() {
 
     override fun sayHelloWithManyReplies(request: HelloRequest, responseObserver: StreamObserver<HelloReply>) {
         //val scope = HelloWorldServer.tracer.spanBuilder("$PREFIX.sayHelloWithManyReplies").startScopedSpan()!!
-        IntRange(0, 5)
-                .forEach { i ->
-                    val reply = HelloReply.newBuilder()
-                            .setMessage("Hello ${request.name} [$i]")
+        repeat(5) {
+            val reply =
+                    HelloReply.newBuilder()
+                            .apply { message = "Hello ${request.name} [$it]" }
                             .build()
-                    responseObserver.onNext(reply)
-                }
+            responseObserver.onNext(reply)
+        }
         //scope.close()
         responseObserver.onCompleted()
     }
@@ -62,15 +62,15 @@ class GreeterImpl : GreeterGrpc.GreeterImplBase() {
     override fun sayHelloWithManyRequestsAndReplies(responseObserver: StreamObserver<HelloReply>) =
             object : StreamObserver<HelloRequest> {
                 //val scope = HelloWorldServer.tracer.spanBuilder("$PREFIX.sayHelloWithManyRequestsAndReplies").startScopedSpan()!!
-
                 override fun onNext(request: HelloRequest) {
-                    IntRange(0, 5)
-                            .forEach { i ->
-                                val reply = HelloReply.newBuilder()
-                                        .setMessage("Hello ${request.name} [$i]")
+                    repeat(5) {
+                        val reply =
+                                HelloReply
+                                        .newBuilder()
+                                        .apply { message = "Hello ${request.name} [$it]" }
                                         .build()
-                                responseObserver.onNext(reply)
-                            }
+                        responseObserver.onNext(reply)
+                    }
                 }
 
                 override fun onError(t: Throwable) {

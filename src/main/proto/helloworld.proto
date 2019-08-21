@@ -19,15 +19,11 @@ message HelloReply {
 
 // The Greeter service definition.
 service Greeter {
-    rpc SayHello (HelloRequest) returns (HelloReply) {
-    }
+    rpc SayHello (HelloRequest) returns (HelloReply);
 
-    rpc SayHelloWithManyRequests (stream HelloRequest) returns (HelloReply) {
-    }
+    rpc SayHelloWithManyRequests (stream HelloRequest) returns (HelloReply);
 
-    rpc SayHelloWithManyReplies (HelloRequest) returns (stream HelloReply) {
-    }
+    rpc SayHelloWithManyReplies (HelloRequest) returns (stream HelloReply);
 
-    rpc SayHelloWithManyRequestsAndReplies (stream HelloRequest) returns (stream HelloReply) {
-    }
+    rpc SayHelloWithManyRequestsAndReplies (stream HelloRequest) returns (stream HelloReply);
 }

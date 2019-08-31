@@ -9,95 +9,98 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.athenain.helloworld.GreeterClient
 import org.athenain.helloworld.helloRequest
+import java.io.Closeable
 import kotlin.random.Random
-import kotlin.system.exitProcess
 
+class HelloWorldClientCR internal constructor(private val client: GreeterClient) : Closeable {
 
-fun main() {
-    try {
-        PrometheusStatsCollector.createAndRegister()
-        RpcViews.registerClientGrpcViews()
-        val http = HTTPServer("localhost", 8889, true)
+    constructor(host: String, port: Int = 50051) :
+            this(GreeterClient.create(channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build()))
 
-        GreeterClient.create(channel = ManagedChannelBuilder.forAddress("localhost", 50051).usePlaintext().build())
-                .also { client ->
-                    syncClient(client)
-                    streamingClient(client)
-                    streamingServer(client)
-                    bidirectionalService(client)
+    fun sayHello(name: String) =
+            runBlocking {
+                val request = helloRequest { this.name = name }
+                val response = client.sayHello(request)
+                println("sayHello response: ${response.message}")
+            }
 
-                    client.shutdownChannel()
+    fun sayHelloWithManyRequests(name: String) {
+        val call = client.sayHelloWithManyRequests()
+
+        runBlocking {
+            launch {
+                try {
+                    repeat(5) {
+                        val request = helloRequest { this.name = "$name-$it" }
+                        call.requests.send(request)
+                    }
+                } finally {
+                    call.requests.close()
                 }
+            }
 
-        exitProcess(0)
-    } catch (t: Throwable) {
-        System.err.println("Failed: $t")
+            val response = call.response.await()
+            println("sayHelloWithManyRequests() response: ${response.message}")
+        }
     }
-    exitProcess(1)
+
+    fun sayHelloWithManyReplies(name: String) {
+        val request = helloRequest { this.name = name }
+        val replies = client.sayHelloWithManyReplies(request).responses
+
+        runBlocking {
+            println("sayHelloWithManyReplies() replies:")
+            for (reply in replies)
+                println(reply.message)
+            println()
+        }
+    }
+
+    fun sayHelloWithManyRequestsAndReplies(name: String) {
+        val call = client.sayHelloWithManyRequestsAndReplies()
+
+        runBlocking {
+            launch {
+                try {
+                    repeat(5) {
+                        val request = helloRequest { this.name = "$name-$it" }
+                        println("sayHelloWithManyRequestsAndReplies() request: ${request.name}")
+                        delay(Random.nextLong(1_000))
+                        call.requests.send(request)
+                    }
+                } finally {
+                    call.requests.close()
+                }
+            }
+
+            launch {
+                for (reply in call.responses) {
+                    delay(Random.nextLong(1_000))
+                    println("sayHelloWithManyRequestsAndReplies() response: ${reply.message}")
+                }
+            }
+        }
+    }
+
+    override fun close() = client.shutdownChannel()
 }
 
-fun syncClient(client: GreeterClient) =
-        runBlocking {
-            val request =
-                    helloRequest {
-                        name = "Hello!"
-                    }
+fun main(args: Array<String>) {
+    PrometheusStatsCollector.createAndRegister()
+    RpcViews.registerClientGrpcViews()
+    val http = HTTPServer("localhost", 8889, true)
 
-            val response = client.sayHello(request)
-            println("Sync response was: ${response.message}")
-        }
+    val name = if (args.isNotEmpty()) args[0] else "world"
 
-fun streamingClient(client: GreeterClient) =
-        runBlocking {
-            client.sayHelloWithManyRequests()
-                    .also { call ->
+    HelloWorldClientCR("localhost")
+            .use { client ->
+                client.apply {
+                    sayHello(name)
+                    sayHelloWithManyRequests(name)
+                    sayHelloWithManyReplies(name)
+                    sayHelloWithManyRequestsAndReplies(name)
+                }
+            }
 
-                        launch {
-                            repeat(5) {
-                                val request = helloRequest { name = "Hello Again! $it" }
-                                call.requests.send(request)
-                            }
-                            call.requests.close()
-                        }
-
-                        val response = call.response.await()
-                        println("Streaming Client result = ${response.message}")
-                    }
-        }
-
-fun streamingServer(client: GreeterClient) =
-        runBlocking {
-            val request = helloRequest { name = "Bill" }
-            client.sayHelloWithManyReplies(request)
-                    .also { call ->
-                        for (response in call.responses)
-                            println("Streaming Server result = ${response.message}")
-                    }
-        }
-
-fun bidirectionalService(client: GreeterClient) =
-        runBlocking {
-            client.sayHelloWithManyRequestsAndReplies()
-                    .also { call ->
-
-                        launch {
-                            repeat(5) {
-                                val s = "Mary $it"
-                                val request = helloRequest { name = s }
-                                delay(Random.nextLong(1_000))
-                                call.requests.send(request)
-                                println("Async client sent $s")
-                            }
-                            call.requests.close()
-                        }
-
-                        launch {
-                            for (response in call.responses) {
-                                delay(Random.nextLong(1_000))
-                                println("Async response from server = ${response.message}")
-                            }
-                        }
-                    }
-        }
-
-
+    http.stop()
+}

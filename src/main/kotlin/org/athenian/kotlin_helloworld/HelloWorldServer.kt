@@ -37,7 +37,6 @@ class HelloWorldServer {
         @Throws(IOException::class, InterruptedException::class)
         @JvmStatic
         fun main(args: Array<String>) {
-
             PrometheusStatsCollector.createAndRegister()
             RpcViews.registerServerGrpcViews()
             HTTPServer("localhost", 8888, true)

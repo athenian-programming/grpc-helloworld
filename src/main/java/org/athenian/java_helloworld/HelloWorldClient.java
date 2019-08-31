@@ -3,7 +3,6 @@ package org.athenian.java_helloworld;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import org.athenain.helloworld.GreeterGrpc;
 import org.athenain.helloworld.HelloReply;
@@ -11,7 +10,6 @@ import org.athenain.helloworld.HelloRequest;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -54,34 +52,10 @@ public class HelloWorldClient
     }
   }
 
-  public void shutdown()
-      throws InterruptedException {
-    channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
-  }
-
-  @Override
-  public void close()
-      throws IOException {
-    try {
-      shutdown();
-    }
-    catch (InterruptedException e) {
-      throw new IOException(e.getMessage());
-    }
-  }
-
   public void sayHello(String name) {
-    HelloRequest request = HelloRequest.newBuilder()
-                                       .setName(name)
-                                       .build();
-    HelloReply response;
-    try {
-      response = this.blockingStub.sayHello(request);
-      System.out.println(format("sayHello() response: %s\n", response.getMessage()));
-    }
-    catch (StatusRuntimeException e) {
-      System.out.println(format("sayHello() failed: %s", e.getStatus()));
-    }
+    HelloRequest request = HelloRequest.newBuilder().setName(name).build();
+    HelloReply response = this.blockingStub.sayHello(request);
+    System.out.println(format("sayHello() response: %s\n", response.getMessage()));
   }
 
   public void sayHelloWithManyRequests(String name) {
@@ -112,9 +86,7 @@ public class HelloWorldClient
 
     try {
       for (int i = 0; i < 5; i++) {
-        HelloRequest request = HelloRequest.newBuilder()
-                                           .setName(format("%s-%d", name, i))
-                                           .build();
+        HelloRequest request = HelloRequest.newBuilder().setName(format("%s-%d", name, i)).build();
         requestObserver.onNext(request);
 
         if (finishLatch.getCount() == 0) {
@@ -143,15 +115,10 @@ public class HelloWorldClient
   }
 
   public void sayHelloWithManyReplies(String name) {
-
-    HelloRequest request = HelloRequest.newBuilder()
-                                       .setName(name)
-                                       .build();
-
-    Iterator<HelloReply> replies = blockingStub.sayHelloWithManyReplies(request);
+    HelloRequest request = HelloRequest.newBuilder().setName(name).build();
 
     System.out.println("sayHelloWithManyReplies() responses:");
-    replies.forEachRemaining((reply) -> System.out.println(reply.getMessage()));
+    blockingStub.sayHelloWithManyReplies(request).forEachRemaining((reply) -> System.out.println(reply.getMessage()));
     System.out.println();
   }
 
@@ -183,9 +150,7 @@ public class HelloWorldClient
 
     try {
       for (int i = 0; i < 5; i++) {
-        HelloRequest request = HelloRequest.newBuilder()
-                                           .setName(format("%s-%d", name, i))
-                                           .build();
+        HelloRequest request = HelloRequest.newBuilder().setName(format("%s-%d", name, i)).build();
         System.out.println(format("sayHelloWithManyRequestsAndReplies() request: %s", request.getName()));
         requestObserver.onNext(request);
 
@@ -211,6 +176,17 @@ public class HelloWorldClient
     }
     catch (InterruptedException e) {
       e.printStackTrace();
+    }
+  }
+
+  @Override
+  public void close()
+      throws IOException {
+    try {
+      channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
+    }
+    catch (InterruptedException e) {
+      throw new IOException(e.getMessage());
     }
   }
 }

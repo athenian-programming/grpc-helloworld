@@ -4,9 +4,9 @@ plugins {
     id 'com.google.protobuf' version '0.8.10'
     id 'idea'
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.3.41'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.50'
     // From https://github.com/ben-manes/gradle-versions-plugin
-    id "com.github.ben-manes.versions" version "0.22.0"
+    id "com.github.ben-manes.versions" version "0.23.0"
 }
 
 group 'org.athenian'
@@ -23,12 +23,12 @@ repositories {
 }
 
 def kgaxVersion = '0.6.0'
-def coroutinesVersion = '1.2.2'
+def coroutinesVersion = '1.3.0'
 def grpcVersion = '1.23.0'
 def protocVersion = '3.9.1'
 def protobufVersion = '3.9.1'
 def annotationVersion = "1.3.2"
-def opencensusVersion = "0.23.0"
+def opencensusVersion = "0.24.0"
 def prometheusVersion = '0.6.0'
 def junitVersion = '4.12'
 def kotlinVersion = plugins.findPlugin("org.jetbrains.kotlin.jvm").kotlinPluginVersion

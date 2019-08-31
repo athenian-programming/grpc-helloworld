@@ -83,24 +83,28 @@ class HelloWorldClientCR internal constructor(private val client: GreeterClient)
     }
 
     override fun close() = client.shutdownChannel()
+
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            PrometheusStatsCollector.createAndRegister()
+            RpcViews.registerClientGrpcViews()
+            val http = HTTPServer("localhost", 8889, true)
+
+            val name = if (args.isNotEmpty()) args[0] else "world"
+
+            HelloWorldClientCR("localhost")
+                    .use { client ->
+                        client.apply {
+                            sayHello(name)
+                            sayHelloWithManyRequests(name)
+                            sayHelloWithManyReplies(name)
+                            sayHelloWithManyRequestsAndReplies(name)
+                        }
+                    }
+
+            http.stop()
+        }
+    }
 }
 
-fun main(args: Array<String>) {
-    PrometheusStatsCollector.createAndRegister()
-    RpcViews.registerClientGrpcViews()
-    val http = HTTPServer("localhost", 8889, true)
-
-    val name = if (args.isNotEmpty()) args[0] else "world"
-
-    HelloWorldClientCR("localhost")
-            .use { client ->
-                client.apply {
-                    sayHello(name)
-                    sayHelloWithManyRequests(name)
-                    sayHelloWithManyReplies(name)
-                    sayHelloWithManyRequestsAndReplies(name)
-                }
-            }
-
-    http.stop()
-}

@@ -149,24 +149,29 @@ class HelloWorldClientNoCR internal constructor(private val channel: ManagedChan
     override fun close() {
         channel.shutdown().awaitTermination(5, TimeUnit.SECONDS)
     }
+
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            PrometheusStatsCollector.createAndRegister()
+            RpcViews.registerClientGrpcViews()
+            val http = HTTPServer("localhost", 8890, true)
+
+            val name = if (args.isNotEmpty()) args[0] else "world"
+
+            HelloWorldClientNoCR("localhost")
+                    .use { client ->
+                        client.apply {
+                            sayHello(name)
+                            sayHelloWithManyRequests(name)
+                            sayHelloWithManyReplies(name)
+                            sayHelloWithManyRequestsAndReplies(name)
+                        }
+                    }
+
+            http.stop()
+        }
+
+    }
 }
 
-fun main(args: Array<String>) {
-    PrometheusStatsCollector.createAndRegister()
-    RpcViews.registerClientGrpcViews()
-    val http = HTTPServer("localhost", 8890, true)
-
-    val name = if (args.isNotEmpty()) args[0] else "world"
-
-    HelloWorldClientNoCR("localhost")
-            .use { client ->
-                client.apply {
-                    sayHello(name)
-                    sayHelloWithManyRequests(name)
-                    sayHelloWithManyReplies(name)
-                    sayHelloWithManyRequestsAndReplies(name)
-                }
-            }
-
-    http.stop()
-}

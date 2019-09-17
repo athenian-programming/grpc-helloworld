@@ -16,10 +16,7 @@ class HelloWorldServer {
 
     @Throws(IOException::class)
     private fun start() {
-        server = ServerBuilder.forPort(port)
-                .addService(GreeterImpl())
-                .build()
-                .start()
+        server = ServerBuilder.forPort(port).addService(GreeterImpl()).build().start()
         println("Server started, listening on $port")
         Runtime.getRuntime().addShutdownHook(
                 Thread {

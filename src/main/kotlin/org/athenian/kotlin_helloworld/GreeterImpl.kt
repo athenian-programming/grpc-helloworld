@@ -9,7 +9,12 @@ class GreeterImpl : GreeterGrpc.GreeterImplBase() {
 
     override fun sayHello(request: HelloRequest, responseObserver: StreamObserver<HelloReply>) {
         //val scope = HelloWorldServer.tracer.spanBuilder("$PREFIX.sayHello").startScopedSpan()!!
-        val reply = HelloReply.newBuilder().apply { message = "Hello ${request.name}" }.build()
+        val reply =
+                HelloReply.newBuilder()
+                        .run {
+                            message = "Hello ${request.name}"
+                            build()
+                        }
         responseObserver.apply {
             onNext(reply)
             //scope.close()
@@ -35,8 +40,10 @@ class GreeterImpl : GreeterGrpc.GreeterImplBase() {
                 override fun onCompleted() {
                     val msg =
                             HelloReply.newBuilder()
-                                    .apply { message = "Hello ${names.joinToString(", ")}" }
-                                    .build()
+                                    .run {
+                                        message = "Hello ${names.joinToString(", ")}"
+                                        build()
+                                    }
                     responseObserver
                             .apply {
                                 onNext(msg)
@@ -51,8 +58,10 @@ class GreeterImpl : GreeterGrpc.GreeterImplBase() {
         repeat(5) {
             val reply =
                     HelloReply.newBuilder()
-                            .apply { message = "Hello ${request.name} [$it]" }
-                            .build()
+                            .run {
+                                message = "Hello ${request.name} [$it]"
+                                build()
+                            }
             responseObserver.onNext(reply)
         }
         //scope.close()
@@ -65,10 +74,11 @@ class GreeterImpl : GreeterGrpc.GreeterImplBase() {
                 override fun onNext(request: HelloRequest) {
                     repeat(5) {
                         val reply =
-                                HelloReply
-                                        .newBuilder()
-                                        .apply { message = "Hello ${request.name} [$it]" }
-                                        .build()
+                                HelloReply.newBuilder()
+                                        .run {
+                                            apply { message = "Hello ${request.name} [$it]" }
+                                            build()
+                                        }
                         responseObserver.onNext(reply)
                     }
                 }

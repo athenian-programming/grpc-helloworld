@@ -32,7 +32,12 @@ class HelloWorldClientNoCR internal constructor(private val channel: ManagedChan
     }
 
     fun sayHello(name: String) {
-        val request = HelloRequest.newBuilder().setName(name).build()
+        val request =
+                HelloRequest.newBuilder()
+                        .run {
+                            setName(name)
+                            build()
+                        }
         val response = blockingStub.sayHello(request)
         println("sayHello() response: ${response.message}")
     }
@@ -60,7 +65,12 @@ class HelloWorldClientNoCR internal constructor(private val channel: ManagedChan
 
         try {
             repeat(5) {
-                val request = HelloRequest.newBuilder().setName("$name-$it").build()
+                val request =
+                        HelloRequest.newBuilder()
+                                .run {
+                                    setName("$name-$it")
+                                    build()
+                                }
                 requestObserver.onNext(request)
 
                 if (finishLatch.count == 0L) {
@@ -87,7 +97,12 @@ class HelloWorldClientNoCR internal constructor(private val channel: ManagedChan
     }
 
     fun sayHelloWithManyReplies(name: String) {
-        val request = HelloRequest.newBuilder().setName(name).build()
+        val request =
+                HelloRequest.newBuilder()
+                        .run {
+                            setName(name)
+                            build()
+                        }
         val replies = blockingStub.sayHelloWithManyReplies(request)
 
         println("sayHelloWithManyReplies() replies:")
@@ -119,7 +134,12 @@ class HelloWorldClientNoCR internal constructor(private val channel: ManagedChan
 
         try {
             repeat(5) {
-                val request = HelloRequest.newBuilder().setName("$name-$it").build()
+                val request =
+                        HelloRequest.newBuilder()
+                                .run {
+                                    setName("$name-$it")
+                                    build()
+                                }
                 println("sayHelloWithManyRequestsAndReplies() request: ${request.name}")
                 requestObserver.onNext(request)
 

@@ -76,7 +76,7 @@ class GreeterImpl : GreeterGrpc.GreeterImplBase() {
                         val reply =
                                 HelloReply.newBuilder()
                                         .run {
-                                            apply { message = "Hello ${request.name} [$it]" }
+                                            message = "Hello ${request.name} [$it]"
                                             build()
                                         }
                         responseObserver.onNext(reply)

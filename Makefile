@@ -34,16 +34,16 @@ dart-stubs:
 	protoc -I=src/main/proto --dart_out=grpc:build/generated/source/dart/lib/src/generated --proto_path=./src/main/proto helloworld.proto
 
 java-client:
-	build/install/HelloWorldGrpc/bin/java-helloworld-client
+	build/install/grpc-helloworld/bin/java-helloworld-client
 
 java-server:
-	build/install/HelloWorldGrpc/bin/java-helloworld-server
+	build/install/grpc-helloworld/bin/java-helloworld-server
 
 kotlin-client:
-	build/install/HelloWorldGrpc/bin/kotlin-helloworld-client
+	build/install/grpc-helloworld/bin/kotlin-helloworld-client
 
 kotlin-server:
-	build/install/HelloWorldGrpc/bin/kotlin-helloworld-server
+	build/install/grpc-helloworld/bin/kotlin-helloworld-server
 
 python-client:
 	python3 src/main/python/helloworld_client.py

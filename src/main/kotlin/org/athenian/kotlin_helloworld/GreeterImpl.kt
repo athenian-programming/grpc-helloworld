@@ -1,9 +1,9 @@
 package org.athenian.kotlin_helloworld
 
 import io.grpc.stub.StreamObserver
-import org.athenain.helloworld.GreeterGrpc
-import org.athenain.helloworld.HelloReply
-import org.athenain.helloworld.HelloRequest
+import org.athenian.helloworld.GreeterGrpc
+import org.athenian.helloworld.HelloReply
+import org.athenian.helloworld.HelloRequest
 
 class GreeterImpl : GreeterGrpc.GreeterImplBase() {
 

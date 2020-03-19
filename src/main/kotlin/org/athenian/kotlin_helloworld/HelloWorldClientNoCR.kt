@@ -8,9 +8,9 @@ import io.grpc.stub.StreamObserver
 import io.opencensus.contrib.grpc.metrics.RpcViews
 import io.opencensus.exporter.stats.prometheus.PrometheusStatsCollector
 import io.prometheus.client.exporter.HTTPServer
-import org.athenain.helloworld.GreeterGrpc
-import org.athenain.helloworld.HelloReply
-import org.athenain.helloworld.HelloRequest
+import org.athenian.helloworld.GreeterGrpc
+import org.athenian.helloworld.HelloReply
+import org.athenian.helloworld.HelloRequest
 import java.io.Closeable
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit

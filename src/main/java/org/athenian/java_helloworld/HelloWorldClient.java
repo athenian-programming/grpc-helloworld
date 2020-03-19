@@ -4,9 +4,9 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
-import org.athenain.helloworld.GreeterGrpc;
-import org.athenain.helloworld.HelloReply;
-import org.athenain.helloworld.HelloRequest;
+import org.athenian.helloworld.GreeterGrpc;
+import org.athenian.helloworld.HelloReply;
+import org.athenian.helloworld.HelloRequest;
 
 import java.io.Closeable;
 import java.io.IOException;

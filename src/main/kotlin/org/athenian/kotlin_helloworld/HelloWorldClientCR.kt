@@ -7,8 +7,8 @@ import io.prometheus.client.exporter.HTTPServer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.athenain.helloworld.GreeterClient
-import org.athenain.helloworld.helloRequest
+import org.athenian.helloworld.GreeterClient
+import org.athenian.helloworld.helloRequest
 import java.io.Closeable
 import kotlin.random.Random
 

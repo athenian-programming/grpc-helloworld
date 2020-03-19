@@ -124,7 +124,7 @@ task kotlin_helloWorldServer(type: CreateStartScripts) {
 }
 
 task kotlin_helloWorldClient(type: CreateStartScripts) {
-    mainClassName = 'org.athenian.kotlin_helloworld.HelloWorldClient'
+    mainClassName = 'org.athenian.kotlin_helloworld.HelloWorldClientCR'
     applicationName = 'kotlin-helloworld-client'
     outputDir = new File(project.buildDir, 'tmp')
     classpath = startScripts.classpath

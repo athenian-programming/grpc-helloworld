@@ -8,10 +8,10 @@ Build the apps with: `./gradlew install`
 
 This creates the shell scripts:
 
-* ./build/install/HelloWorldGrpc/bin/java-helloworld-client
-* ./build/install/HelloWorldGrpc/bin/java-helloworld-server
-* ./build/install/HelloWorldGrpc/bin/kotlin-helloworld-client
-* ./build/install/HelloWorldGrpc/bin/kotlin-helloworld-server
+* ./build/install/grpc-helloworld/bin/java-helloworld-client
+* ./build/install/grpc-helloworld/bin/java-helloworld-server
+* ./build/install/grpc-helloworld/bin/kotlin-helloworld-client
+* ./build/install/grpc-helloworld/bin/kotlin-helloworld-server
 
 ## Python Setup
 

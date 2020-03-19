@@ -51,6 +51,9 @@ python-client:
 python-server:
 	python3 src/main/python/helloworld__server.py
 
+refresh:
+	./gradlew --refresh-dependencies dependencies
+
 versioncheck:
 	./gradlew dependencyUpdates
 

@@ -18,8 +18,11 @@ java-build:
 clean:
 	./gradlew clean
 
-java-bin:
-	./gradlew install
+scripts:
+	./gradlew installDist
+
+jars:
+	./gradlew -b build-uber.gradle java_server java_client kotlin_server kotlin_client
 
 java-stubs:
 	./gradlew generateProto

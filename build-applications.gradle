@@ -3,7 +3,8 @@ plugins {
     id 'java'
     id 'com.google.protobuf' version '0.8.12'
     id 'org.jetbrains.kotlin.jvm' version '1.3.71'
-    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    // Provides support for scripts
+    id 'application'
     // From https://github.com/ben-manes/gradle-versions-plugin
     id "com.github.ben-manes.versions" version "0.28.0"
 }
@@ -113,41 +114,41 @@ compileTestKotlin {
     }
 }
 
-// Required for multiple uberjar targets
-shadowJar {
-    mergeServiceFiles()
+// Script tasks
+startScripts.enabled = false
+
+task java_server(type: CreateStartScripts) {
+    mainClassName = 'org.athenian.java_helloworld.HelloWorldServer'
+    applicationName = 'java-server'
+    outputDir = new File(project.buildDir, 'tmp')
+    classpath = startScripts.classpath
 }
 
-// Uberjar tasks
-task java_server(type: Jar, dependsOn: shadowJar) {
-    archiveFileName = 'java-server.jar'
-    manifest {
-        attributes('Main-Class': 'org.athenian.java_helloworld.HelloWorldServer')
-    }
-    from zipTree(shadowJar.archiveFile)
+task java_client(type: CreateStartScripts) {
+    mainClassName = 'org.athenian.java_helloworld.HelloWorldClient'
+    applicationName = 'java-client'
+    outputDir = new File(project.buildDir, 'tmp')
+    classpath = startScripts.classpath
 }
 
-task java_client(type: Jar, dependsOn: shadowJar) {
-    archiveFileName = 'java-client.jar'
-    manifest {
-        attributes('Main-Class': 'org.athenian.java_helloworld.HelloWorldClient')
-    }
-    from zipTree(shadowJar.archiveFile)
+task kotlin_server(type: CreateStartScripts) {
+    mainClassName = 'org.athenian.kotlin_helloworld.HelloWorldServer'
+    applicationName = 'kotlin-server'
+    outputDir = new File(project.buildDir, 'tmp')
+    classpath = startScripts.classpath
 }
 
-task kotlin_server(type: Jar, dependsOn: shadowJar) {
-    archiveFileName = 'kotlin-server.jar'
-    manifest {
-        attributes('Main-Class': 'org.athenian.kotlin_helloworld.HelloWorldServer')
-    }
-    from zipTree(shadowJar.archiveFile)
+task kotlin_client(type: CreateStartScripts) {
+    mainClassName = 'org.athenian.kotlin_helloworld.HelloWorldClientCR'
+    applicationName = 'kotlin-client'
+    outputDir = new File(project.buildDir, 'tmp')
+    classpath = startScripts.classpath
 }
 
-task kotlin_client(type: Jar, dependsOn: shadowJar) {
-    archiveFileName = 'kotlin-client.jar'
-    manifest {
-        attributes('Main-Class': 'org.athenian.kotlin_helloworld.HelloWorldClientCR')
-    }
-    from zipTree(shadowJar.archiveFile)
+applicationDistribution.into('bin') {
+    from(java_server)
+    from(java_client)
+    from(kotlin_server)
+    from(kotlin_client)
+    fileMode = 0755
 }
-

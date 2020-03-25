@@ -8,7 +8,7 @@ Generate the stubs with: `./gradlew generateProto`
 
 Build the shell scripts with: 
 ```shell script
-./gradlew installDist`
+./gradlew -b build-applications.gradle installDist
 ```
 
 Which builds:
@@ -20,7 +20,7 @@ Which builds:
 
 Build the uberjars with: 
 ```shell script
-./gradlew -b build-uber.gradle java_server java_client kotlin_server kotlin_client
+./gradlew  java_server java_client kotlin_server kotlin_client
 ```
 
 Which builds:

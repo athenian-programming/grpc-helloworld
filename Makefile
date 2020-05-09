@@ -4,9 +4,9 @@ all: stubs java-build bin
 
 stubs: java-stubs python-stubs
 
-bin: java-bin
+bin: java-build
 
-java: java-stubs java-bin
+java: java-stubs java-build
 
 python: python-stubs
 

@@ -1,6 +1,6 @@
 # gRPC HelloWorld Example 
 
-Uses: https://github.com/googleapis/gapic-generator-kotlin
+Uses: https://github.com/grpc/grpc-kotlin
 
 ## Java and Kotlin Setup
 

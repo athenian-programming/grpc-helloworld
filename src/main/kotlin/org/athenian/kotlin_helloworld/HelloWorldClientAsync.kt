@@ -5,26 +5,20 @@ import io.grpc.ManagedChannelBuilder
 import io.opencensus.contrib.grpc.metrics.RpcViews
 import io.opencensus.exporter.stats.prometheus.PrometheusStatsCollector
 import io.prometheus.client.exporter.HTTPServer
+import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.athenian.helloworld.GreeterGrpcKt.GreeterCoroutineStub
-import org.athenian.helloworld.HelloRequest
 import java.io.Closeable
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 // https://github.com/GoogleCloudPlatform/kotlin-samples/blob/master/run/grpc-hello-world-streaming/src/main/kotlin/io/grpc/examples/helloworld/HelloWorldClient.kt
 
-fun helloRequest(block: HelloRequest.Builder.() -> Unit): HelloRequest =
-    HelloRequest.newBuilder().let {
-        block.invoke(it)
-        it.build()
-    }
-
-class HelloWorldClientCR internal constructor(private val channel: ManagedChannel) : Closeable {
+class HelloWorldClientAsync internal constructor(private val channel: ManagedChannel) : Closeable {
     private val stub = GreeterCoroutineStub(channel)
 
     constructor(host: String, port: Int = 50051) :
@@ -33,8 +27,8 @@ class HelloWorldClientCR internal constructor(private val channel: ManagedChanne
     suspend fun sayHello(name: String) =
         coroutineScope {
             val request = helloRequest { this.name = name }
-            val response = stub.sayHello(request)
-            println("sayHello response: ${response.message}")
+            val response = async { stub.sayHello(request) }
+            println("sayHello response: ${response.await().message}")
         }
 
     suspend fun sayHelloWithManyRequests(name: String) =
@@ -46,7 +40,6 @@ class HelloWorldClientCR internal constructor(private val channel: ManagedChanne
                         emit(request)
                     }
                 }
-
             val response = stub.sayHelloWithManyRequests(requests)
             println("sayHelloWithManyRequests() response: ${response.message}")
         }
@@ -55,7 +48,6 @@ class HelloWorldClientCR internal constructor(private val channel: ManagedChanne
         coroutineScope {
             val request = helloRequest { this.name = name }
             val replies = stub.sayHelloWithManyReplies(request)
-
             println("sayHelloWithManyReplies() replies:")
             replies.collect { reply ->
                 println(reply.message)
@@ -94,7 +86,7 @@ class HelloWorldClientCR internal constructor(private val channel: ManagedChanne
 
             val name = if (args.isNotEmpty()) args[0] else "world"
 
-            HelloWorldClientCR("localhost")
+            HelloWorldClientAsync("localhost")
                 .use { client ->
                     client.apply {
                         runBlocking {
@@ -110,4 +102,3 @@ class HelloWorldClientCR internal constructor(private val channel: ManagedChanne
         }
     }
 }
-

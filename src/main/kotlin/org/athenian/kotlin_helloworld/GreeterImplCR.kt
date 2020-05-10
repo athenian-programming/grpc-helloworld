@@ -7,6 +7,8 @@ import org.athenian.helloworld.GreeterGrpcKt
 import org.athenian.helloworld.HelloReply
 import org.athenian.helloworld.HelloRequest
 
+// https://github.com/GoogleCloudPlatform/kotlin-samples/blob/master/run/grpc-hello-world-streaming/src/main/kotlin/io/grpc/examples/helloworld/HelloWorldServer.kt
+
 fun helloReply(block: HelloReply.Builder.() -> Unit): HelloReply =
     HelloReply.newBuilder().let {
         block.invoke(it)

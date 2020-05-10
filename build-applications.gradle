@@ -36,8 +36,6 @@ dependencies {
     implementation "io.grpc:grpc-stub:${grpc_version}"
     implementation "io.grpc:grpc-services:${grpc_version}"
 
-    implementation "com.github.googleapis.gax-kotlin:kgax-grpc:${kgax_version}"
-
     compileOnly "javax.annotation:javax.annotation-api:${annotation_version}"
 
     implementation "io.opencensus:opencensus-impl:${opencensus_version}"
@@ -73,16 +71,16 @@ protobuf {
     plugins {
         grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpc_version}" }
 
-        client { artifact = 'com.github.googleapis:gapic-generator-kotlin:master-SNAPSHOT:core@jar' }
+        // Specify protoc to generate using our grpc kotlin plugin
+        grpckt { artifact = "io.grpc:protoc-gen-grpc-kotlin:${gengrpc_version}" }
     }
     generateProtoTasks {
-        all()*.plugins {
-            grpc {}
-        }
-
         all().each { task ->
             task.plugins {
-                client {}
+                // Generate Java gRPC classes
+                grpc { }
+                // Generate Kotlin gRPC using the custom plugin from library
+                grpckt { }
             }
         }
     }

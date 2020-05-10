@@ -5,16 +5,16 @@ import org.athenian.helloworld.GreeterGrpc
 import org.athenian.helloworld.HelloReply
 import org.athenian.helloworld.HelloRequest
 
-class GreeterImpl : GreeterGrpc.GreeterImplBase() {
+class GreeterImplNoCR : GreeterGrpc.GreeterImplBase() {
 
     override fun sayHello(request: HelloRequest, responseObserver: StreamObserver<HelloReply>) {
         //val scope = HelloWorldServer.tracer.spanBuilder("$PREFIX.sayHello").startScopedSpan()!!
         val reply =
-                HelloReply.newBuilder()
-                        .run {
-                            message = "Hello ${request.name}"
-                            build()
-                        }
+            HelloReply.newBuilder()
+                .run {
+                    message = "Hello ${request.name}"
+                    build()
+                }
         responseObserver.apply {
             onNext(reply)
             //scope.close()

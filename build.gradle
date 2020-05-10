@@ -2,6 +2,7 @@ plugins {
     id 'idea'
     id 'java'
     id 'com.google.protobuf' version '0.8.12'
+    //id 'com.google.protobuf:protobuf-gradle-plugin' version '0.8.12'
     id 'org.jetbrains.kotlin.jvm' version '1.3.72'
     id 'com.github.johnrengelman.shadow' version '5.2.0'
     // From https://github.com/ben-manes/gradle-versions-plugin
@@ -35,6 +36,8 @@ dependencies {
     implementation "io.grpc:grpc-stub:${grpc_version}"
     implementation "io.grpc:grpc-services:${grpc_version}"
 
+    implementation "io.grpc:grpc-kotlin-stub:0.1.1"
+
     implementation "com.github.googleapis.gax-kotlin:kgax-grpc:${kgax_version}"
 
     compileOnly "javax.annotation:javax.annotation-api:${annotation_version}"
@@ -46,6 +49,9 @@ dependencies {
 
     // examples/advanced need this for JsonFormat
     implementation "com.google.protobuf:protobuf-java-util:${protobuf_version}"
+
+    implementation "io.github.microutils:kotlin-logging:${logging_version}"
+    implementation "ch.qos.logback:logback-classic:${logback_version}"
 
     testImplementation "io.grpc:grpc-testing:${grpc_version}"
     testImplementation "org.mockito:mockito-core:3.3.1"
@@ -72,16 +78,16 @@ protobuf {
     plugins {
         grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpc_version}" }
 
-        client { artifact = 'com.github.googleapis:gapic-generator-kotlin:master-SNAPSHOT:core@jar' }
+        // Specify protoc to generate using our grpc kotlin plugin
+        grpckt { artifact = "io.grpc:protoc-gen-grpc-kotlin:0.1.1" }
     }
     generateProtoTasks {
-        all()*.plugins {
-            grpc {}
-        }
-
         all().each { task ->
             task.plugins {
-                client {}
+                // Generate Java gRPC classes
+                grpc { }
+                // Generate Kotlin gRPC using the custom plugin from library
+                grpckt { }
             }
         }
     }
@@ -141,3 +147,6 @@ task kotlin_client(type: Jar, dependsOn: shadowJar) {
     from zipTree(shadowJar.archiveFile)
 }
 
+//startScripts.dependsOn(otherStartScripts)
+
+task(stage, dependsOn: "installDist")

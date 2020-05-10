@@ -10,20 +10,20 @@ import io.prometheus.client.exporter.HTTPServer
 import java.io.IOException
 
 
-class HelloWorldServer {
+class HelloWorldServerNoCR {
 
-    private var server: Server? = null
+    private lateinit var server: Server
 
     @Throws(IOException::class)
     private fun start() {
-        server = ServerBuilder.forPort(port).addService(GreeterImpl()).build().start()
+        server = ServerBuilder.forPort(port).addService(GreeterImplNoCR()).build().start()
         println("Server started, listening on $port")
         Runtime.getRuntime().addShutdownHook(
-                Thread {
-                    // Use stderr here since the logger may have been reset by its JVM shutdown hook.
-                    System.err.println("*** shutting down gRPC server since JVM is shutting down")
-                    server?.shutdown()
-                    System.err.println("*** server shut down")
+            Thread {
+                // Use stderr here since the logger may have been reset by its JVM shutdown hook.
+                System.err.println("*** shutting down gRPC server since JVM is shutting down")
+                server.shutdown()
+                System.err.println("*** server shut down")
                 })
     }
 
@@ -38,10 +38,10 @@ class HelloWorldServer {
             RpcViews.registerServerGrpcViews()
             HTTPServer("localhost", 8888, true)
 
-            HelloWorldServer()
+            HelloWorldServerNoCR()
                     .apply {
                         start()
-                        server?.awaitTermination()
+                        server.awaitTermination()
                     }
         }
     }

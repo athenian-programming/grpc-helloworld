@@ -1,88 +1,92 @@
 package org.athenian.kotlin_helloworld
 
+import io.grpc.ManagedChannel
 import io.grpc.ManagedChannelBuilder
 import io.opencensus.contrib.grpc.metrics.RpcViews
 import io.opencensus.exporter.stats.prometheus.PrometheusStatsCollector
 import io.prometheus.client.exporter.HTTPServer
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
-import org.athenian.helloworld.GreeterClient
-import org.athenian.helloworld.helloRequest
+import org.athenian.helloworld.GreeterGrpcKt.GreeterCoroutineStub
+import org.athenian.helloworld.HelloRequest
 import java.io.Closeable
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
-class HelloWorldClientCR internal constructor(private val client: GreeterClient) : Closeable {
+fun helloRequest(block: HelloRequest.Builder.() -> Unit): HelloRequest =
+    HelloRequest.newBuilder().let {
+        block.invoke(it)
+        it.build()
+    }
+
+class HelloWorldClientCR internal constructor(private val channel: ManagedChannel) : Closeable {
+    private val stub = GreeterCoroutineStub(channel)
 
     constructor(host: String, port: Int = 50051) :
-            this(GreeterClient.create(channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build()))
+            this(ManagedChannelBuilder.forAddress(host, port).usePlaintext().build())
 
     fun sayHello(name: String) =
-            runBlocking {
-                val request = helloRequest { this.name = name }
-                val response = client.sayHello(request)
-                println("sayHello response: ${response.message}")
-            }
+        runBlocking {
+            val request = helloRequest { this.name = name }
+            val response = stub.sayHello(request)
+            println("sayHello response: ${response.message}")
+        }
 
     fun sayHelloWithManyRequests(name: String) {
-        val call = client.sayHelloWithManyRequests()
-
-        runBlocking {
-            launch {
-                try {
-                    repeat(5) {
-                        val request = helloRequest { this.name = "$name-$it" }
-                        call.requests.send(request)
-                    }
-                } finally {
-                    call.requests.close()
+        val requests =
+            flow {
+                repeat(5) {
+                    val request = helloRequest { this.name = "$name-$it" }
+                    emit(request)
                 }
             }
 
-            val response = call.response.await()
+        runBlocking {
+            val response = stub.sayHelloWithManyRequests(requests)
             println("sayHelloWithManyRequests() response: ${response.message}")
         }
     }
 
     fun sayHelloWithManyReplies(name: String) {
         val request = helloRequest { this.name = name }
-        val replies = client.sayHelloWithManyReplies(request).responses
+        val replies = stub.sayHelloWithManyReplies(request)
 
         runBlocking {
             println("sayHelloWithManyReplies() replies:")
-            for (reply in replies)
+            replies.collect { reply ->
                 println(reply.message)
+            }
             println()
         }
     }
 
     fun sayHelloWithManyRequestsAndReplies(name: String) {
-        val call = client.sayHelloWithManyRequestsAndReplies()
-
         runBlocking {
-            launch {
-                try {
+            val requests =
+                flow {
                     repeat(5) {
+                        delay(Random.nextLong(1_000))
                         val request = helloRequest { this.name = "$name-$it" }
                         println("sayHelloWithManyRequestsAndReplies() request: ${request.name}")
-                        delay(Random.nextLong(1_000))
-                        call.requests.send(request)
+                        emit(request)
                     }
-                } finally {
-                    call.requests.close()
                 }
-            }
-
-            launch {
-                for (reply in call.responses) {
-                    delay(Random.nextLong(1_000))
-                    println("sayHelloWithManyRequestsAndReplies() response: ${reply.message}")
-                }
+            val replies = stub.sayHelloWithManyRequestsAndReplies(requests)
+            replies.collect {
+                delay(Random.nextLong(1_000))
+                println("sayHelloWithManyRequestsAndReplies() response: ${it.message}")
             }
         }
     }
 
-    override fun close() = client.shutdownChannel()
+    override fun close() {
+        channel.shutdown().awaitTermination(5, TimeUnit.SECONDS)
+    }
 
     companion object {
         @JvmStatic
@@ -93,7 +97,11 @@ class HelloWorldClientCR internal constructor(private val client: GreeterClient)
 
             val name = if (args.isNotEmpty()) args[0] else "world"
 
-            HelloWorldClientCR("localhost")
+            Executors.newFixedThreadPool(10).asCoroutineDispatcher().use { dispatcher ->
+                val builder = ManagedChannelBuilder.forTarget("localhost:50051").usePlaintext()
+                val channel = builder.executor(dispatcher.asExecutor()).build()
+                val c = ManagedChannelBuilder.forAddress("localhost", 50051).usePlaintext().build()
+                HelloWorldClientCR(c)
                     .use { client ->
                         client.apply {
                             sayHello(name)
@@ -102,7 +110,7 @@ class HelloWorldClientCR internal constructor(private val client: GreeterClient)
                             sayHelloWithManyRequestsAndReplies(name)
                         }
                     }
-
+            }
             http.stop()
         }
     }

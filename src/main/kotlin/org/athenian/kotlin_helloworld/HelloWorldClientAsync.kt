@@ -24,11 +24,12 @@ class HelloWorldClientAsync internal constructor(private val channel: ManagedCha
     constructor(host: String, port: Int = 50051) :
             this(ManagedChannelBuilder.forAddress(host, port).usePlaintext().build())
 
-    suspend fun sayHello(name: String) = coroutineScope {
-        val request = helloRequest { this.name = name }
-        val response = async { stub.sayHello(request) }
-        println("sayHello response: ${response.await().message}")
-    }
+    suspend fun sayHello(name: String) =
+        coroutineScope {
+            val request = helloRequest { this.name = name }
+            val response = async { stub.sayHello(request) }
+            println("sayHello response: ${response.await().message}")
+        }
 
     suspend fun sayHelloWithManyRequests(name: String) =
         coroutineScope {

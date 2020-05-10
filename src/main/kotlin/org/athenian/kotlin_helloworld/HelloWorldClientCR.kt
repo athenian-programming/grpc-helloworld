@@ -5,8 +5,6 @@ import io.grpc.ManagedChannelBuilder
 import io.opencensus.contrib.grpc.metrics.RpcViews
 import io.opencensus.exporter.stats.prometheus.PrometheusStatsCollector
 import io.prometheus.client.exporter.HTTPServer
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -14,7 +12,6 @@ import kotlinx.coroutines.runBlocking
 import org.athenian.helloworld.GreeterGrpcKt.GreeterCoroutineStub
 import org.athenian.helloworld.HelloRequest
 import java.io.Closeable
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
@@ -97,20 +94,16 @@ class HelloWorldClientCR internal constructor(private val channel: ManagedChanne
 
             val name = if (args.isNotEmpty()) args[0] else "world"
 
-            Executors.newFixedThreadPool(10).asCoroutineDispatcher().use { dispatcher ->
-                val builder = ManagedChannelBuilder.forTarget("localhost:50051").usePlaintext()
-                val channel = builder.executor(dispatcher.asExecutor()).build()
-                val c = ManagedChannelBuilder.forAddress("localhost", 50051).usePlaintext().build()
-                HelloWorldClientCR(c)
-                    .use { client ->
-                        client.apply {
-                            sayHello(name)
-                            sayHelloWithManyRequests(name)
-                            sayHelloWithManyReplies(name)
-                            sayHelloWithManyRequestsAndReplies(name)
-                        }
+            HelloWorldClientCR("localhost")
+                .use { client ->
+                    client.apply {
+                        sayHello(name)
+                        sayHelloWithManyRequests(name)
+                        sayHelloWithManyReplies(name)
+                        sayHelloWithManyRequestsAndReplies(name)
                     }
-            }
+                }
+
             http.stop()
         }
     }

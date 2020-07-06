@@ -55,7 +55,6 @@ class HelloWorldClientCR internal constructor(private val channel: ManagedChanne
         coroutineScope {
             val request = helloRequest { this.name = name }
             val replies = stub.sayHelloWithManyReplies(request)
-
             println("sayHelloWithManyReplies() replies:")
             replies.collect { reply ->
                 println(reply.message)

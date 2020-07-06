@@ -24,6 +24,9 @@ scripts:
 jars:
 	./gradlew -b build.gradle java_server java_client kotlin_server kotlin_client
 
+app:
+	./gradlew -b build-application.gradle installDist
+
 java-stubs:
 	./gradlew generateProto
 

@@ -1,16 +1,19 @@
 plugins {
     id 'idea'
+    //id 'application'
     id 'java'
     id 'com.google.protobuf' version '0.8.12'
     //id 'com.google.protobuf:protobuf-gradle-plugin' version '0.8.12'
-    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
-    id 'com.github.johnrengelman.shadow' version '6.0.0'
-    // From https://github.com/ben-manes/gradle-versions-plugin
-    id "com.github.ben-manes.versions" version "0.28.0"
+    id 'org.jetbrains.kotlin.jvm' version '1.4.31'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id "com.github.ben-manes.versions" version "0.38.0"
 }
 
 group 'org.athenian'
 version '1.0-SNAPSHOT'
+
+//def mainName = 'org.athenian.kotlin_helloworld.HelloWorldCR'
+//def appName = 'helloworld'
 
 sourceCompatibility = 1.8
 
@@ -132,7 +135,7 @@ task java_client(type: Jar, dependsOn: shadowJar) {
 task kotlin_server(type: Jar, dependsOn: shadowJar) {
     archiveFileName = 'kotlin-server.jar'
     manifest {
-        attributes('Main-Class': 'org.athenian.kotlin_helloworld.HelloWorldServer')
+        attributes('Main-Class': 'org.athenian.kotlin_helloworld.HelloWorldServerCR')
     }
     from zipTree(shadowJar.archiveFile)
 }

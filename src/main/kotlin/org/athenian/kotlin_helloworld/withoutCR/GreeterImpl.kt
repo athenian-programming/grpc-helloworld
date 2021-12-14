@@ -1,11 +1,11 @@
-package org.athenian.kotlin_helloworld
+package org.athenian.kotlin_helloworld.withoutCR
 
 import io.grpc.stub.StreamObserver
 import org.athenian.helloworld.GreeterGrpc
 import org.athenian.helloworld.HelloReply
 import org.athenian.helloworld.HelloRequest
 
-class GreeterImplNoCR : GreeterGrpc.GreeterImplBase() {
+class GreeterImpl : GreeterGrpc.GreeterImplBase() {
 
     override fun sayHello(request: HelloRequest, responseObserver: StreamObserver<HelloReply>) {
         //val scope = HelloWorldServer.tracer.spanBuilder("$PREFIX.sayHello").startScopedSpan()!!

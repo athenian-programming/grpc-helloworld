@@ -1,7 +1,6 @@
-package org.athenian.kotlin_helloworld
+package org.athenian.kotlin_helloworld.withCR
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import org.athenian.helloworld.GreeterGrpcKt
 import org.athenian.helloworld.HelloReply
@@ -9,13 +8,7 @@ import org.athenian.helloworld.HelloRequest
 
 // https://github.com/GoogleCloudPlatform/kotlin-samples/blob/master/run/grpc-hello-world-streaming/src/main/kotlin/io/grpc/examples/helloworld/HelloWorldServer.kt
 
-fun helloReply(block: HelloReply.Builder.() -> Unit): HelloReply =
-    HelloReply.newBuilder().let {
-        block.invoke(it)
-        it.build()
-    }
-
-class GreeterImplCR : GreeterGrpcKt.GreeterCoroutineImplBase() {
+class GreeterImpl : GreeterGrpcKt.GreeterCoroutineImplBase() {
 
     override suspend fun sayHello(request: HelloRequest): HelloReply =
         helloReply { message = "Hello ${request.name}" }
@@ -49,4 +42,12 @@ class GreeterImplCR : GreeterGrpcKt.GreeterCoroutineImplBase() {
                 }
             }
         }
+
+    companion object {
+        fun helloReply(block: HelloReply.Builder.() -> Unit): HelloReply =
+            HelloReply.newBuilder().let {
+                block.invoke(it)
+                it.build()
+            }
+    }
 }

@@ -1,4 +1,4 @@
-package org.athenian.kotlin_helloworld
+package org.athenian.kotlin_helloworld.withoutCR
 
 import io.grpc.ConnectivityState
 import io.grpc.ManagedChannel
@@ -16,7 +16,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 
-class HelloWorldClientNoCR internal constructor(private val channel: ManagedChannel) : Closeable {
+class HelloWorldClient internal constructor(private val channel: ManagedChannel) : Closeable {
     private val blockingStub: GreeterGrpc.GreeterBlockingStub = GreeterGrpc.newBlockingStub(channel)
     private val asyncStub: GreeterGrpc.GreeterStub = GreeterGrpc.newStub(channel)
 
@@ -179,7 +179,7 @@ class HelloWorldClientNoCR internal constructor(private val channel: ManagedChan
 
             val name = if (args.isNotEmpty()) args[0] else "world"
 
-            HelloWorldClientNoCR("localhost")
+            HelloWorldClient("localhost")
                     .use { client ->
                         client.apply {
                             sayHello(name)

@@ -1,4 +1,4 @@
-package org.athenian.kotlin_helloworld
+package org.athenian.kotlin_helloworld.withCR
 
 import io.grpc.Server
 import io.grpc.ServerBuilder
@@ -7,16 +7,14 @@ import io.opencensus.exporter.stats.prometheus.PrometheusStatsCollector
 import io.opencensus.trace.Tracer
 import io.opencensus.trace.Tracing
 import io.prometheus.client.exporter.HTTPServer
-import java.io.IOException
 
 
-class HelloWorldServerNoCR {
+class HelloWorldServer {
 
     private lateinit var server: Server
 
-    @Throws(IOException::class)
     private fun start() {
-        server = ServerBuilder.forPort(port).addService(GreeterImplNoCR()).build().start()
+        server = ServerBuilder.forPort(port).addService(GreeterImpl()).build().start()
         println("Server started, listening on $port")
         Runtime.getRuntime().addShutdownHook(
             Thread {
@@ -24,25 +22,24 @@ class HelloWorldServerNoCR {
                 System.err.println("*** shutting down gRPC server since JVM is shutting down")
                 server.shutdown()
                 System.err.println("*** server shut down")
-                })
+            })
     }
 
     companion object {
-        const val port = 50051
+        val port = System.getenv("PORT")?.toInt() ?: 50051
         val tracer: Tracer = Tracing.getTracer()
 
-        @Throws(IOException::class, InterruptedException::class)
         @JvmStatic
         fun main(args: Array<String>) {
             PrometheusStatsCollector.createAndRegister()
             RpcViews.registerServerGrpcViews()
             HTTPServer("localhost", 8888, true)
 
-            HelloWorldServerNoCR()
-                    .apply {
-                        start()
-                        server.awaitTermination()
-                    }
+            HelloWorldServer()
+                .apply {
+                    start()
+                    server.awaitTermination()
+                }
         }
     }
 }

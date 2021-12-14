@@ -7,7 +7,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.athenian.helloworld.GreeterGrpcKt.GreeterCoroutineStub
-import org.athenian.helloworld.HelloRequest
+import org.athenian.kotlin_helloworld.Msgs.helloRequest
 import java.io.Closeable
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
@@ -72,13 +72,6 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
     }
 
     companion object {
-        fun helloRequest(block: HelloRequest.Builder.() -> Unit): HelloRequest =
-            HelloRequest.newBuilder().let {
-                block.invoke(it)
-                it.build()
-            }
-
-
         @JvmStatic
         fun main(args: Array<String>) {
             val name = if (args.isNotEmpty()) args[0] else "world"

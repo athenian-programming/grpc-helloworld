@@ -7,7 +7,7 @@ import io.grpc.Status
 import io.grpc.stub.StreamObserver
 import org.athenian.helloworld.GreeterGrpc
 import org.athenian.helloworld.HelloReply
-import org.athenian.helloworld.HelloRequest
+import org.athenian.kotlin_helloworld.Msgs.helloRequest
 import java.io.Closeable
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -29,12 +29,7 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
     }
 
     fun sayHello(name: String) {
-        val request =
-            HelloRequest.newBuilder()
-                .run {
-                    setName(name)
-                    build()
-                }
+        val request = helloRequest { this.name = name }
         val response = blockingStub.sayHello(request)
         println("sayHello() response: ${response.message}")
     }
@@ -62,12 +57,7 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
 
         try {
             repeat(5) {
-                val request =
-                    HelloRequest.newBuilder()
-                        .run {
-                            setName("$name-$it")
-                            build()
-                        }
+                val request = helloRequest { this.name = "$name-$it" }
                 requestObserver.onNext(request)
 
                 if (finishLatch.count == 0L) {
@@ -94,12 +84,7 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
     }
 
     fun sayHelloWithManyReplies(name: String) {
-        val request =
-            HelloRequest.newBuilder()
-                .run {
-                    setName(name)
-                    build()
-                }
+        val request = helloRequest { this.name = name }
         val replies = blockingStub.sayHelloWithManyReplies(request)
 
         println("sayHelloWithManyReplies() replies:")
@@ -131,12 +116,7 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
 
         try {
             repeat(5) {
-                val request =
-                    HelloRequest.newBuilder()
-                        .run {
-                            setName("$name-$it")
-                            build()
-                        }
+                val request = helloRequest { this.name = "$name-$it" }
                 println("sayHelloWithManyRequestsAndReplies() request: ${request.name}")
                 requestObserver.onNext(request)
 

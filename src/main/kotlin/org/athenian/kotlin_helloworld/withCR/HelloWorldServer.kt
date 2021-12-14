@@ -1,15 +1,12 @@
 package org.athenian.kotlin_helloworld.withCR
 
-import io.grpc.Server
 import io.grpc.ServerBuilder
 
-
-class HelloWorldServer {
-
-    private lateinit var server: Server
+class HelloWorldServer(val port: Int) {
+    private val server = ServerBuilder.forPort(port).addService(GreeterImpl()).build()
 
     private fun start() {
-        server = ServerBuilder.forPort(port).addService(GreeterImpl()).build().start()
+        server.start()
         println("Server started, listening on $port")
         Runtime.getRuntime().addShutdownHook(
             Thread {
@@ -21,11 +18,10 @@ class HelloWorldServer {
     }
 
     companion object {
-        val port = System.getenv("PORT")?.toInt() ?: 50051
-
         @JvmStatic
         fun main(args: Array<String>) {
-            HelloWorldServer()
+            val port = System.getenv("PORT")?.toInt() ?: 50051
+            HelloWorldServer(port)
                 .apply {
                     start()
                     server.awaitTermination()

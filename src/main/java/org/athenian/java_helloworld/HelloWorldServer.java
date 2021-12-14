@@ -5,8 +5,6 @@ import io.grpc.ServerBuilder;
 
 import java.io.IOException;
 
-import static java.lang.String.format;
-
 public class HelloWorldServer {
   private Server server;
 
@@ -22,17 +20,17 @@ public class HelloWorldServer {
     /* The port on which the server should run */
     int port = 50051;
     server = ServerBuilder.forPort(port)
-                          .addService(new GreeterImpl())
-                          .build()
-                          .start();
-    System.out.println(format("Server started, listening on %d", port));
+            .addService(new GreeterImpl())
+            .build()
+            .start();
+    System.out.printf("Server started, listening on %d%n", port);
     Runtime.getRuntime().addShutdownHook(
-        new Thread(() -> {
-          // Use stderr here since the logger may have been reset by its JVM shutdown hook.
-          System.err.println("*** shutting down gRPC server since JVM is shutting down");
-          HelloWorldServer.this.stop();
-          System.err.println("*** server shut down");
-        }));
+            new Thread(() -> {
+              // Use stderr here since the logger may have been reset by its JVM shutdown hook.
+              System.err.println("*** shutting down gRPC server since JVM is shutting down");
+              HelloWorldServer.this.stop();
+              System.err.println("*** server shut down");
+            }));
   }
 
   private void stop() {

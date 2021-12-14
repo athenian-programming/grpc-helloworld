@@ -2,15 +2,8 @@ package org.athenian.kotlin_helloworld.withoutCR
 
 import io.grpc.Server
 import io.grpc.ServerBuilder
-import io.opencensus.contrib.grpc.metrics.RpcViews
-import io.opencensus.exporter.stats.prometheus.PrometheusStatsCollector
-import io.opencensus.trace.Tracer
-import io.opencensus.trace.Tracing
-import io.prometheus.client.exporter.HTTPServer
-
 
 class HelloWorldServer {
-
     private lateinit var server: Server
 
     private fun start() {
@@ -22,24 +15,19 @@ class HelloWorldServer {
                 System.err.println("*** shutting down gRPC server since JVM is shutting down")
                 server.shutdown()
                 System.err.println("*** server shut down")
-                })
+            })
     }
 
     companion object {
         const val port = 50051
-        val tracer: Tracer = Tracing.getTracer()
 
         @JvmStatic
         fun main(args: Array<String>) {
-            PrometheusStatsCollector.createAndRegister()
-            RpcViews.registerServerGrpcViews()
-            HTTPServer("localhost", 8888, true)
-
             HelloWorldServer()
-                    .apply {
-                        start()
-                        server.awaitTermination()
-                    }
+                .apply {
+                    start()
+                    server.awaitTermination()
+                }
         }
     }
 }

@@ -19,7 +19,6 @@ repositories {
     maven { // The google mirror is less flaky than mavenCentral()
         url = "https://maven-central.storage-download.googleapis.com/repos/central/data/"
     }
-    jcenter()
     maven { url = "https://jitpack.io" }
 }
 
@@ -43,14 +42,10 @@ dependencies {
     implementation "io.opencensus:opencensus-exporter-stats-prometheus:${opencensus_version}"
     implementation "io.prometheus:simpleclient_httpserver:${prometheus_version}"
 
-    // examples/advanced need this for JsonFormat
-    implementation "com.google.protobuf:protobuf-java-util:${protobuf_version}"
-
     testImplementation "io.grpc:grpc-testing:${grpc_version}"
     testImplementation "org.mockito:mockito-core:3.3.1"
 
     testImplementation "junit:junit:${junit_version}"
-    testCompile group: 'junit', name: 'junit', version: junit_version
 }
 
 // Inform IDEs like IntelliJ IDEA, Eclipse or NetBeans about the generated code.

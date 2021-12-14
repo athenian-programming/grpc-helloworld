@@ -2,9 +2,6 @@ package org.athenian.kotlin_helloworld.withCR
 
 import io.grpc.ManagedChannel
 import io.grpc.ManagedChannelBuilder
-import io.opencensus.contrib.grpc.metrics.RpcViews
-import io.opencensus.exporter.stats.prometheus.PrometheusStatsCollector
-import io.prometheus.client.exporter.HTTPServer
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
@@ -84,10 +81,6 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
 
         @JvmStatic
         fun main(args: Array<String>) {
-            PrometheusStatsCollector.createAndRegister()
-            RpcViews.registerClientGrpcViews()
-            val http = HTTPServer("localhost", 8889, true)
-
             val name = if (args.isNotEmpty()) args[0] else "world"
 
             HelloWorldClient("localhost")
@@ -101,8 +94,6 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
                         }
                     }
                 }
-
-            http.stop()
         }
     }
 }

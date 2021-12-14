@@ -55,7 +55,7 @@ public class HelloWorldClient
   public void sayHello(String name) {
     HelloRequest request = HelloRequest.newBuilder().setName(name).build();
     HelloReply response = this.blockingStub.sayHello(request);
-    System.out.println(format("sayHello() response: %s\n", response.getMessage()));
+    System.out.printf("sayHello() response: %s\n%n", response.getMessage());
   }
 
   public void sayHelloWithManyRequests(String name) {
@@ -66,14 +66,14 @@ public class HelloWorldClient
         new StreamObserver<HelloReply>() {
           @Override
           public void onNext(HelloReply reply) {
-            System.out.println(format("sayHelloWithManyRequests() response: %s\n", reply.getMessage()));
+              System.out.printf("sayHelloWithManyRequests() response: %s\n%n", reply.getMessage());
           }
 
           @Override
           public void onError(Throwable t) {
             Status status = Status.fromThrowable(t);
-            System.out.println(format("sayHelloWithMayRequests() failed: %s", status));
-            finishLatch.countDown();
+              System.out.printf("sayHelloWithMayRequests() failed: %s%n", status);
+              finishLatch.countDown();
           }
 
           @Override
@@ -130,14 +130,14 @@ public class HelloWorldClient
         new StreamObserver<HelloReply>() {
           @Override
           public void onNext(HelloReply reply) {
-            System.out.println(format("sayHelloWithManyRequestsAndReplies() response: %s", reply.getMessage()));
+              System.out.printf("sayHelloWithManyRequestsAndReplies() response: %s%n", reply.getMessage());
           }
 
           @Override
           public void onError(Throwable t) {
             Status status = Status.fromThrowable(t);
-            System.out.println(format("sayHelloWithManyRequestsAndReplies() failed: %s", status));
-            finishLatch.countDown();
+              System.out.printf("sayHelloWithManyRequestsAndReplies() failed: %s%n", status);
+              finishLatch.countDown();
           }
 
           @Override
@@ -151,8 +151,8 @@ public class HelloWorldClient
     try {
       for (int i = 0; i < 5; i++) {
         HelloRequest request = HelloRequest.newBuilder().setName(format("%s-%d", name, i)).build();
-        System.out.println(format("sayHelloWithManyRequestsAndReplies() request: %s", request.getName()));
-        requestObserver.onNext(request);
+          System.out.printf("sayHelloWithManyRequestsAndReplies() request: %s%n", request.getName());
+          requestObserver.onNext(request);
 
         if (finishLatch.getCount() == 0) {
           // RPC completed or errored before we finished sending.

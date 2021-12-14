@@ -2,11 +2,6 @@ package org.athenian.kotlin_helloworld.withCR
 
 import io.grpc.Server
 import io.grpc.ServerBuilder
-import io.opencensus.contrib.grpc.metrics.RpcViews
-import io.opencensus.exporter.stats.prometheus.PrometheusStatsCollector
-import io.opencensus.trace.Tracer
-import io.opencensus.trace.Tracing
-import io.prometheus.client.exporter.HTTPServer
 
 
 class HelloWorldServer {
@@ -27,14 +22,9 @@ class HelloWorldServer {
 
     companion object {
         val port = System.getenv("PORT")?.toInt() ?: 50051
-        val tracer: Tracer = Tracing.getTracer()
 
         @JvmStatic
         fun main(args: Array<String>) {
-            PrometheusStatsCollector.createAndRegister()
-            RpcViews.registerServerGrpcViews()
-            HTTPServer("localhost", 8888, true)
-
             HelloWorldServer()
                 .apply {
                     start()

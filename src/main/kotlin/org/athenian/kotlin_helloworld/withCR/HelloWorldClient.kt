@@ -7,7 +7,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.athenian.helloworld.GreeterGrpcKt.GreeterCoroutineStub
-import org.athenian.kotlin_helloworld.Msgs.helloRequest
+import org.athenian.kotlin_helloworld.withCR.Msgs.helloRequest
 import java.io.Closeable
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
@@ -15,10 +15,10 @@ import kotlin.random.Random
 // https://github.com/GoogleCloudPlatform/kotlin-samples/blob/master/run/grpc-hello-world-streaming/src/main/kotlin/io/grpc/examples/helloworld/HelloWorldClient.kt
 
 class HelloWorldClient internal constructor(private val channel: ManagedChannel) : Closeable {
-    private val stub = GreeterCoroutineStub(channel)
-
     constructor(host: String, port: Int = 50051) :
             this(ManagedChannelBuilder.forAddress(host, port).usePlaintext().build())
+
+    private val stub = GreeterCoroutineStub(channel)
 
     suspend fun sayHello(name: String) =
         coroutineScope {
@@ -78,8 +78,8 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
 
             HelloWorldClient("localhost")
                 .use { client ->
-                    client.apply {
-                        runBlocking {
+                    runBlocking {
+                        client.apply {
                             sayHello(name)
                             sayHelloWithManyRequests(name)
                             sayHelloWithManyReplies(name)

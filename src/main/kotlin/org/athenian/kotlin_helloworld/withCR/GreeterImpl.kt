@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.flow
 import org.athenian.helloworld.GreeterGrpcKt
 import org.athenian.helloworld.HelloReply
 import org.athenian.helloworld.HelloRequest
+import org.athenian.kotlin_helloworld.withCR.Msgs.helloReply
 
 // https://github.com/GoogleCloudPlatform/kotlin-samples/blob/master/run/grpc-hello-world-streaming/src/main/kotlin/io/grpc/examples/helloworld/HelloWorldServer.kt
 
@@ -15,7 +16,7 @@ class GreeterImpl : GreeterGrpcKt.GreeterCoroutineImplBase() {
 
     override suspend fun sayHelloWithManyRequests(requests: Flow<HelloRequest>): HelloReply {
         val names: MutableList<String> = mutableListOf()
-        requests.collect { names.add(it.name) }
+        requests.collect { names += it.name }
         return helloReply { message = "Hello ${names.joinToString(", ")}" }
     }
 
@@ -42,12 +43,4 @@ class GreeterImpl : GreeterGrpcKt.GreeterCoroutineImplBase() {
                 }
             }
         }
-
-    companion object {
-        fun helloReply(block: HelloReply.Builder.() -> Unit): HelloReply =
-            HelloReply.newBuilder().let {
-                block.invoke(it)
-                it.build()
-            }
-    }
 }

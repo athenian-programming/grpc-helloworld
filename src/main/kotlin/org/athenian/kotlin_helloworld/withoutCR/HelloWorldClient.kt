@@ -7,18 +7,18 @@ import io.grpc.Status
 import io.grpc.stub.StreamObserver
 import org.athenian.helloworld.GreeterGrpc
 import org.athenian.helloworld.HelloReply
-import org.athenian.kotlin_helloworld.Msgs.helloRequest
+import org.athenian.kotlin_helloworld.withCR.Msgs.helloRequest
 import java.io.Closeable
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 
 class HelloWorldClient internal constructor(private val channel: ManagedChannel) : Closeable {
-    private val blockingStub: GreeterGrpc.GreeterBlockingStub = GreeterGrpc.newBlockingStub(channel)
-    private val asyncStub: GreeterGrpc.GreeterStub = GreeterGrpc.newStub(channel)
-
     constructor(host: String, port: Int = 50051) :
             this(ManagedChannelBuilder.forAddress(host, port).usePlaintext().build())
+
+    private val blockingStub: GreeterGrpc.GreeterBlockingStub = GreeterGrpc.newBlockingStub(channel)
+    private val asyncStub: GreeterGrpc.GreeterStub = GreeterGrpc.newStub(channel)
 
     init {
         channel.apply {

@@ -6,7 +6,7 @@ plugins {
     //id 'com.google.protobuf:protobuf-gradle-plugin' version '0.8.12'
     id 'org.jetbrains.kotlin.jvm' version '1.6.10'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id "com.github.ben-manes.versions" version "0.40.0"
+    id "com.github.ben-manes.versions" version "0.41.0"
 }
 
 group 'org.athenian'
@@ -49,18 +49,18 @@ dependencies {
     testImplementation "junit:junit:$junit_version"
 }
 
-// Inform IDEs like IntelliJ IDEA, Eclipse or NetBeans about the generated code.
-sourceSets {
-    main {
-        java {
-            srcDirs 'src/main/java'
-            srcDirs 'src/main/kotlin'
-            srcDirs 'build/generated/source/proto/main/grpc'
-            srcDirs 'build/generated/source/proto/main/java'
-            srcDirs 'build/generated/source/proto/main/client'
-        }
-    }
-}
+//// Inform IDEs like IntelliJ IDEA, Eclipse or NetBeans about the generated code.
+//sourceSets {
+//    main {
+//        java {
+//            srcDirs 'src/main/java'
+//            srcDirs 'src/main/kotlin'
+//            srcDirs 'build/generated/source/proto/main/grpc'
+//            srcDirs 'build/generated/source/proto/main/java'
+//            srcDirs 'build/generated/source/proto/main/client'
+//        }
+//    }
+//}
 
 compileKotlin.dependsOn ':generateProto'
 

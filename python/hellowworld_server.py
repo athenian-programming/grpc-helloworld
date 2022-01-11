@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import grpc
 import logging
 import sys
 import time
 from concurrent import futures
 
-import grpc
-
-sys.path.append('build/generated/source/python')
+sys.path.append('../build/generated/source/python')
 
 import helloworld_pb2
 import helloworld_pb2_grpc

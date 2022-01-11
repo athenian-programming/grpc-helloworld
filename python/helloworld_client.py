@@ -7,7 +7,7 @@ from __future__ import print_function
 import logging
 import sys
 
-sys.path.append('build/generated/source/python')
+sys.path.append('../build/generated/source/python')
 
 import helloworld_pb2
 import grpc_info

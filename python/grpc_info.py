@@ -1,4 +1,7 @@
 import grpc
+import sys
+
+sys.path.append('../build/generated/source/python')
 
 import helloworld_pb2_grpc
 

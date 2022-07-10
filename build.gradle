@@ -2,9 +2,9 @@ plugins {
     id 'idea'
     //id 'application'
     id 'java'
-    id 'com.google.protobuf' version '0.8.18'
+    id 'com.google.protobuf' version '0.8.19'
     //id 'com.google.protobuf:protobuf-gradle-plugin' version '0.8.12'
-    id 'org.jetbrains.kotlin.jvm' version '1.6.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.7.10'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id "com.github.ben-manes.versions" version "0.42.0"
 }
@@ -24,8 +24,6 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$coroutines_version"
@@ -75,7 +73,7 @@ protobuf {
 
         // Specify protoc to generate using our grpc kotlin plugin
         grpckt {
-            artifact = "io.grpc:protoc-gen-grpc-kotlin:$gengrpc_version:jdk7@jar"
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:$gengrpc_version:jdk8@jar"
         }
     }
     generateProtoTasks {

@@ -1,4 +1,4 @@
-default: stubs bin
+default: versioncheck
 
 all: stubs java-build bin
 
@@ -64,7 +64,4 @@ versioncheck:
 	./gradlew dependencyUpdates
 
 upgrade-wrapper:
-	./gradlew wrapper --gradle-version=7.5-rc-4 --distribution-type=bin
-
-
-
+	./gradlew wrapper --gradle-version=7.5.1 --distribution-type=bin

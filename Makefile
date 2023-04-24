@@ -10,8 +10,6 @@ java: java-stubs java-build
 
 python: python-stubs
 
-dart: dart-stubs
-
 java-build:
 	./gradlew assemble build
 
@@ -34,10 +32,6 @@ python-stubs:
 	mkdir -p ./build/generated/source/python
 	touch ./build/generated/source/python/__init__.py
 	python3 -m grpc_tools.protoc -I. --python_out=./build/generated/source/python --grpc_python_out=./build/generated/source/python --proto_path=./src/main/proto helloworld.proto
-
-dart-stubs:
-	mkdir -p build/generated/source/dart/lib/src/generated
-	protoc -I=src/main/proto --dart_out=grpc:build/generated/source/dart/lib/src/generated --proto_path=./src/main/proto helloworld.proto
 
 java-client:
 	build/install/grpc-helloworld/bin/java-helloworld-client
@@ -64,4 +58,4 @@ versioncheck:
 	./gradlew dependencyUpdates
 
 upgrade-wrapper:
-	./gradlew wrapper --gradle-version=8.0.2 --distribution-type=bin
+	./gradlew wrapper --gradle-version=8.1.1 --distribution-type=bin

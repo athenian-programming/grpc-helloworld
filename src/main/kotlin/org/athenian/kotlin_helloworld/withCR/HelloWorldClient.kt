@@ -7,6 +7,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.athenian.helloworld.GreeterGrpcKt.GreeterCoroutineStub
+import org.athenian.helloworld.krotodc.HelloRequest
+import org.athenian.helloworld.krotodc.helloreply.toDataClass
+import org.athenian.helloworld.krotodc.hellorequest.toProto
 import org.athenian.kotlin_helloworld.withCR.Msgs.helloRequest
 import java.io.Closeable
 import java.util.concurrent.TimeUnit
@@ -55,15 +58,15 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
                 flow {
                     repeat(5) {
                         delay(Random.nextLong(1_000))
-                        val request = helloRequest { this.name = "$name-$it" }
-                        println("sayHelloWithManyRequestsAndReplies() request: ${request.name}")
-                        emit(request)
+                        val request = HelloRequest(name = "$name-$it")
+                        println("sayHelloWithManyRequestsAndReplies() request: $request")
+                        emit(request.toProto())
                     }
                 }
             val replies = stub.sayHelloWithManyRequestsAndReplies(requests)
             replies.collect {
                 delay(Random.nextLong(1_000))
-                println("sayHelloWithManyRequestsAndReplies() response: ${it.message}")
+                println("sayHelloWithManyRequestsAndReplies() response: ${it.toDataClass()}")
             }
         }
 

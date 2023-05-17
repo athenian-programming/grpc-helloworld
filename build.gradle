@@ -15,7 +15,8 @@ version '1.0-SNAPSHOT'
 //def mainName = 'org.athenian.kotlin_helloworld.HelloWorldCR'
 //def appName = 'helloworld'
 
-sourceCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 repositories {
     google()
@@ -95,14 +96,14 @@ protobuf {
 
 compileKotlin {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_17
         freeCompilerArgs = ["-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
                             "-opt-in=kotlinx.coroutines.InternalCoroutinesApi"]
     }
 }
 compileTestKotlin {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_17
     }
 }
 

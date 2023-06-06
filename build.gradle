@@ -95,16 +95,12 @@ protobuf {
 }
 
 compileKotlin {
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17
-        freeCompilerArgs = ["-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                            "-opt-in=kotlinx.coroutines.InternalCoroutinesApi"]
-    }
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_17
+    kotlinOptions.freeCompilerArgs = ["-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                                      "-opt-in=kotlinx.coroutines.InternalCoroutinesApi"]
 }
 compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17
-    }
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_17
 }
 
 // Required for multiple uberjar targets
@@ -113,7 +109,8 @@ shadowJar {
 }
 
 // Uberjar tasks
-task java_server(type: Jar, dependsOn: shadowJar) {
+tasks.register('java_server', Jar) {
+    dependsOn shadowJar
     archiveFileName = 'java-server.jar'
     manifest {
         attributes('Main-Class': 'org.athenian.java_helloworld.HelloWorldServer')
@@ -121,7 +118,8 @@ task java_server(type: Jar, dependsOn: shadowJar) {
     from zipTree(shadowJar.archiveFile)
 }
 
-task java_client(type: Jar, dependsOn: shadowJar) {
+tasks.register('java_client', Jar) {
+    dependsOn shadowJar
     archiveFileName = 'java-client.jar'
     manifest {
         attributes('Main-Class': 'org.athenian.java_helloworld.HelloWorldClient')
@@ -129,7 +127,8 @@ task java_client(type: Jar, dependsOn: shadowJar) {
     from zipTree(shadowJar.archiveFile)
 }
 
-task kotlin_server(type: Jar, dependsOn: shadowJar) {
+tasks.register('kotlin_server', Jar) {
+    dependsOn shadowJar
     archiveFileName = 'kotlin-server.jar'
     manifest {
         attributes('Main-Class': 'org.athenian.kotlin_helloworld.HelloWorldServerCR')
@@ -137,7 +136,8 @@ task kotlin_server(type: Jar, dependsOn: shadowJar) {
     from zipTree(shadowJar.archiveFile)
 }
 
-task kotlin_client(type: Jar, dependsOn: shadowJar) {
+tasks.register('kotlin_client', Jar) {
+    dependsOn shadowJar
     archiveFileName = 'kotlin-client.jar'
     manifest {
         attributes('Main-Class': 'org.athenian.kotlin_helloworld.HelloWorldClientCR')
@@ -147,4 +147,4 @@ task kotlin_client(type: Jar, dependsOn: shadowJar) {
 
 //startScripts.dependsOn(otherStartScripts)
 
-task(stage, dependsOn: "installDist")
+tasks.register('stage') { dependsOn "installDist" }

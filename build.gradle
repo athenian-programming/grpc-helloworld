@@ -103,8 +103,6 @@ compileKotlin {
                                       "-opt-in=kotlinx.coroutines.InternalCoroutinesApi"]
 }
 compileTestKotlin {
-    kotlinOptions.freeCompilerArgs = ["-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                                      "-opt-in=kotlinx.coroutines.InternalCoroutinesApi"]
 }
 
 // Required for multiple uberjar targets

@@ -3,7 +3,6 @@ plugins {
     //id 'application'
     id 'java'
     id 'com.google.protobuf' version '0.9.2'
-    //id 'com.google.protobuf:protobuf-gradle-plugin' version '0.8.12'
     id 'org.jetbrains.kotlin.jvm' version '1.8.21'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
     id "com.github.ben-manes.versions" version "0.46.0"
@@ -26,9 +25,8 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$coroutines_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$coroutines_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-debug:$coroutines_version"
+//    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$coroutines_version"
+//    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-debug:$coroutines_version"
 
     implementation "io.grpc:grpc-netty-shaded:$grpc_version"
     implementation "io.grpc:grpc-protobuf:$grpc_version"
@@ -46,7 +44,6 @@ dependencies {
 
     testImplementation "io.grpc:grpc-testing:$grpc_version"
     testImplementation "org.mockito:mockito-core:$mockito_version"
-
     testImplementation "junit:junit:$junit_version"
 }
 

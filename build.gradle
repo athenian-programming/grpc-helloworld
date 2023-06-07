@@ -94,13 +94,17 @@ protobuf {
     }
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 compileKotlin {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_17
     kotlinOptions.freeCompilerArgs = ["-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
                                       "-opt-in=kotlinx.coroutines.InternalCoroutinesApi"]
 }
 compileTestKotlin {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_17
+    kotlinOptions.freeCompilerArgs = ["-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                                      "-opt-in=kotlinx.coroutines.InternalCoroutinesApi"]
 }
 
 // Required for multiple uberjar targets

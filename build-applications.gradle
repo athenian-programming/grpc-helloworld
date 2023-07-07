@@ -3,7 +3,7 @@ plugins {
     id 'java'
     id 'application'
     id 'com.google.protobuf' version '0.9.2'
-    id 'org.jetbrains.kotlin.jvm' version '1.8.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.0'
     id "com.github.ben-manes.versions" version '0.46.0'
 }
 

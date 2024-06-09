@@ -3,7 +3,7 @@ plugins {
     //id 'application'
     id 'java'
     id 'com.google.protobuf' version '0.9.4'
-    id 'org.jetbrains.kotlin.jvm' version '1.9.22'
+    id 'org.jetbrains.kotlin.jvm' version '2.0.0'
     id "com.github.ben-manes.versions" version "0.51.0"
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
@@ -36,6 +36,8 @@ dependencies {
     implementation "io.grpc:grpc-kotlin-stub:$gengrpc_version"
 
     implementation "io.github.mscheong01:krotoDC-core:$krotodc_version"
+
+    implementation "com.google.protobuf:protobuf-java-util:$protoc_version"
 
     compileOnly "javax.annotation:javax.annotation-api:$annotation_version"
 

@@ -21,11 +21,10 @@ class HelloWorldServer(val port: Int) {
         @JvmStatic
         fun main(args: Array<String>) {
             val port = System.getenv("PORT")?.toInt() ?: 50051
-            HelloWorldServer(port)
-                .apply {
-                    start()
-                    server.awaitTermination()
-                }
+            with(HelloWorldServer(port)) {
+                start()
+                server.awaitTermination()
+            }
         }
     }
 }

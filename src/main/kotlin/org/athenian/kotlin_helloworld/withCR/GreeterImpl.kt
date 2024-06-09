@@ -15,7 +15,7 @@ class GreeterImpl : GreeterGrpcKt.GreeterCoroutineImplBase() {
         helloReply { message = "Hello ${request.name}" }
 
     override suspend fun sayHelloWithManyRequests(requests: Flow<HelloRequest>): HelloReply {
-        val names: MutableList<String> = mutableListOf()
+        val names = mutableListOf<String>()
         requests.collect { names += it.name }
         return helloReply { message = "Hello ${names.joinToString(", ")}" }
     }

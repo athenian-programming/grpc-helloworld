@@ -5,15 +5,15 @@ import org.athenian.helloworld.HelloRequest
 
 object Msgs {
     fun helloRequest(block: HelloRequest.Builder.() -> Unit): HelloRequest =
-        HelloRequest.newBuilder().let {
-            block.invoke(it)
-            it.build()
+        HelloRequest.newBuilder().let { builder ->
+            block.invoke(builder)
+            builder.build()
         }
 
     fun helloReply(block: HelloReply.Builder.() -> Unit): HelloReply =
-        HelloReply.newBuilder().let {
-            block.invoke(it)
-            it.build()
+        HelloReply.newBuilder().let { builder ->
+            block.invoke(builder)
+            builder.build()
         }
 
 }

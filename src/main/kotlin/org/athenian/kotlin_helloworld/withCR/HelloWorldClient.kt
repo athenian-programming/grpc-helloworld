@@ -10,7 +10,7 @@ import org.athenian.helloworld.GreeterGrpcKt.GreeterCoroutineStub
 import org.athenian.helloworld.krotodc.HelloRequest
 import org.athenian.helloworld.krotodc.helloreply.toDataClass
 import org.athenian.helloworld.krotodc.hellorequest.toProto
-import org.athenian.kotlin_helloworld.withCR.Msgs.helloRequest
+import org.athenian.kotlin_helloworld.msgs.Msgs.helloRequest
 import java.io.Closeable
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
@@ -19,7 +19,7 @@ import kotlin.random.Random
 
 class HelloWorldClient internal constructor(private val channel: ManagedChannel) : Closeable {
     constructor(host: String, port: Int = 50051) :
-            this(ManagedChannelBuilder.forAddress(host, port).usePlaintext().build())
+        this(ManagedChannelBuilder.forAddress(host, port).usePlaintext().build())
 
     private val stub = GreeterCoroutineStub(channel)
 
@@ -82,7 +82,7 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
             HelloWorldClient("localhost")
                 .use { client ->
                     runBlocking {
-                        client.apply {
+                        with(client) {
                             sayHello(name)
                             sayHelloWithManyRequests(name)
                             sayHelloWithManyReplies(name)

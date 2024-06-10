@@ -1,4 +1,4 @@
-package org.athenian.kotlin_helloworld.withCR
+package org.athenian.kotlin_helloworld.msgs
 
 import org.athenian.helloworld.HelloReply
 import org.athenian.helloworld.HelloRequest

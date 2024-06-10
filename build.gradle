@@ -4,6 +4,7 @@ plugins {
     id 'java'
     id 'com.google.protobuf' version '0.9.4'
     id 'org.jetbrains.kotlin.jvm' version '2.0.0'
+    id 'org.jmailen.kotlinter' version "4.3.0"
     id "com.github.ben-manes.versions" version "0.51.0"
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
@@ -25,24 +26,17 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
-//    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$coroutines_version"
-//    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-debug:$coroutines_version"
-
     implementation "io.grpc:grpc-netty-shaded:$grpc_version"
     implementation "io.grpc:grpc-protobuf:$grpc_version"
     implementation "io.grpc:grpc-stub:$grpc_version"
     implementation "io.grpc:grpc-services:$grpc_version"
-
     implementation "io.grpc:grpc-kotlin-stub:$gengrpc_version"
-
     implementation "io.github.mscheong01:krotoDC-core:$krotodc_version"
-
     implementation "com.google.protobuf:protobuf-java-util:$protoc_version"
+    implementation "io.github.oshai:kotlin-logging-jvm:$logging_version"
+    implementation "ch.qos.logback:logback-classic:$logback_version"
 
     compileOnly "javax.annotation:javax.annotation-api:$annotation_version"
-
-    implementation "io.github.microutils:kotlin-logging:$logging_version"
-    implementation "ch.qos.logback:logback-classic:$logback_version"
 
     testImplementation "io.grpc:grpc-testing:$grpc_version"
     testImplementation "org.mockito:mockito-core:$mockito_version"

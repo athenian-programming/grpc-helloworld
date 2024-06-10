@@ -12,7 +12,6 @@ import java.io.Closeable
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-
 class HelloWorldClient internal constructor(private val channel: ManagedChannel) : Closeable {
     constructor(host: String, port: Int = 50051) :
         this(ManagedChannelBuilder.forAddress(host, port).usePlaintext().build())

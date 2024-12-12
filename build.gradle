@@ -3,8 +3,8 @@ plugins {
     //id 'application'
     id 'java'
     id 'com.google.protobuf' version '0.9.4'
-    id 'org.jetbrains.kotlin.jvm' version '2.0.0'
-    id 'org.jmailen.kotlinter' version "4.3.0"
+    id 'org.jetbrains.kotlin.jvm' version '2.1.0'
+//    id 'org.jmailen.kotlinter' version "5.0.0"
     id "com.github.ben-manes.versions" version "0.51.0"
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
@@ -14,9 +14,6 @@ version '1.0-SNAPSHOT'
 
 //def mainName = 'org.athenian.kotlin_helloworld.HelloWorldCR'
 //def appName = 'helloworld'
-
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
 
 repositories {
     google()
@@ -41,6 +38,10 @@ dependencies {
     testImplementation "io.grpc:grpc-testing:$grpc_version"
     testImplementation "org.mockito:mockito-core:$mockito_version"
     testImplementation "junit:junit:$junit_version"
+}
+
+kotlin {
+    jvmToolchain(11)
 }
 
 //// Inform IDEs like IntelliJ IDEA, Eclipse or NetBeans about the generated code.

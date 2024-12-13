@@ -38,7 +38,7 @@ class GreeterImpl : GreeterGrpc.GreeterImplBase() {
                         HelloReply.newBuilder()
                             .run {
                                 message = "Hello ${names.joinToString(", ")}"
-                                build()
+                                build()!!
                             }
                     onNext(msg)
                     onCompleted()

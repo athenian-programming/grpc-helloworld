@@ -28,10 +28,11 @@ dependencies {
     implementation "io.grpc:grpc-stub:$grpc_version"
     implementation "io.grpc:grpc-services:$grpc_version"
     implementation "io.grpc:grpc-kotlin-stub:$gengrpc_version"
-    implementation "io.github.mscheong01:krotoDC-core:$krotodc_version"
     implementation "com.google.protobuf:protobuf-java-util:$protoc_version"
-    implementation "io.github.oshai:kotlin-logging-jvm:$logging_version"
+
+    implementation "io.github.oshai:kotlin-logging:$logging_version"
     implementation "ch.qos.logback:logback-classic:$logback_version"
+    implementation "org.slf4j:jul-to-slf4j:$slf4j_version"
 
     compileOnly "javax.annotation:javax.annotation-api:$annotation_version"
 
@@ -43,19 +44,6 @@ dependencies {
 kotlin {
     jvmToolchain(11)
 }
-
-//// Inform IDEs like IntelliJ IDEA, Eclipse or NetBeans about the generated code.
-//sourceSets {
-//    main {
-//        java {
-//            srcDirs 'src/main/java'
-//            srcDirs 'src/main/kotlin'
-//            srcDirs 'build/generated/source/proto/main/grpc'
-//            srcDirs 'build/generated/source/proto/main/java'
-//            srcDirs 'build/generated/source/proto/main/client'
-//        }
-//    }
-//}
 
 compileKotlin.dependsOn ':generateProto'
 
@@ -72,29 +60,22 @@ protobuf {
         grpckt {
             artifact = "io.grpc:protoc-gen-grpc-kotlin:$gengrpc_version:jdk8@jar"
         }
-
-        krotoDC {
-            artifact = "io.github.mscheong01:protoc-gen-krotoDC:$krotodc_version:jdk8@jar"
-        }
     }
     generateProtoTasks {
         all().each { task ->
             task.plugins {
                 grpc {}     // Generate Java gRPC classes
                 grpckt {}   // Generate Kotlin gRPC using the custom plugin from library
-                krotoDC {}  // Generate Kotlin data classes
             }
         }
     }
 }
 
-kotlin {
-    jvmToolchain(17)
-}
-
 compileKotlin {
-    kotlinOptions.freeCompilerArgs = ["-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                                      "-opt-in=kotlinx.coroutines.InternalCoroutinesApi"]
+    kotlinOptions {
+        freeCompilerArgs = ["-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                            "-opt-in=kotlinx.coroutines.InternalCoroutinesApi"]
+    }
 }
 compileTestKotlin {
 }

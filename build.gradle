@@ -2,10 +2,10 @@ plugins {
     id 'idea'
     //id 'application'
     id 'java'
-    id 'com.google.protobuf' version '0.9.4'
-    id 'org.jetbrains.kotlin.jvm' version '2.1.0'
+    id 'com.google.protobuf' version '0.9.5'
+    id 'org.jetbrains.kotlin.jvm' version '2.2.0'
 //    id 'org.jmailen.kotlinter' version "5.0.0"
-    id "com.github.ben-manes.versions" version "0.51.0"
+    id "com.github.ben-manes.versions" version "0.52.0"
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 

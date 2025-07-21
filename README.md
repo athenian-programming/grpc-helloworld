@@ -1,4 +1,4 @@
-# gRPC HelloWorld Example 
+# gRPC HelloWorld Example
 
 Uses: https://github.com/grpc/grpc-kotlin
 
@@ -6,7 +6,7 @@ Uses: https://github.com/grpc/grpc-kotlin
 
 Generate the stubs with: `./gradlew generateProto`
 
-Build the shell scripts with: 
+Build the shell scripts with:
 ```shell script
 ./gradlew -b build-applications.gradle installDist
 ```
@@ -18,7 +18,7 @@ Which builds:
 * ./build/install/grpc-helloworld/bin/kotlin-client
 * ./build/install/grpc-helloworld/bin/kotlin-server
 
-Build the uberjars with: 
+Build the uberjars with:
 ```shell script
 ./gradlew  java_server java_client kotlin_server kotlin_client
 ```
@@ -33,6 +33,8 @@ Which builds:
 ## Python Setup
 
 Generate the stubs with: `make python-stubs`
+
+Additional background: https://dev.to/lucasfugisawa/kotlin-grpc-build-your-first-service-in-four-steps-3pff
 
 
 

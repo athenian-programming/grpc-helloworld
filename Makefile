@@ -10,6 +10,9 @@ java: java-stubs java-build
 
 python: python-stubs
 
+build: java-stubs
+	./gradlew build -xtest
+
 java-build:
 	./gradlew assemble build
 
@@ -20,10 +23,7 @@ scripts:
 	./gradlew installDist
 
 jars:
-	./gradlew -b build.gradle java_server java_client kotlin_server kotlin_client
-
-app:
-	./gradlew -b build-applications.gradle installDist
+	./gradlew java_server java_client kotlin_server_withcr kotlin_client_withcr kotlin_server_withoutcr kotlin_client_withoutcr
 
 java-stubs:
 	./gradlew generateProto

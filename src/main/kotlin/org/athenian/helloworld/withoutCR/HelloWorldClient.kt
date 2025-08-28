@@ -1,4 +1,4 @@
-package org.athenian.kotlin_helloworld.withoutCR
+package org.athenian.helloworld.withoutCR
 
 import io.grpc.ConnectivityState
 import io.grpc.ManagedChannel
@@ -7,12 +7,14 @@ import io.grpc.Status
 import io.grpc.stub.StreamObserver
 import org.athenian.helloworld.GreeterGrpc
 import org.athenian.helloworld.HelloReply
-import org.athenian.kotlin_helloworld.msgs.Msgs.helloRequest
+import org.athenian.helloworld.helloRequest
 import java.io.Closeable
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-class HelloWorldClient internal constructor(private val channel: ManagedChannel) : Closeable {
+class HelloWorldClient internal constructor(
+    private val channel: ManagedChannel,
+) : Closeable {
     constructor(host: String, port: Int = 50051) :
         this(ManagedChannelBuilder.forAddress(host, port).usePlaintext().build())
 
@@ -87,8 +89,9 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
         val replies = blockingStub.sayHelloWithManyReplies(request)
 
         println("sayHelloWithManyReplies() replies:")
-        for (reply in replies)
+        for (reply in replies) {
             println(reply.message)
+        }
         println()
     }
 
@@ -163,4 +166,3 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
         }
     }
 }
-

@@ -1,18 +1,16 @@
-package org.athenian.kotlin_helloworld.withCR
+package org.athenian.helloworld.withCR
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.athenian.helloworld.GreeterGrpcKt
 import org.athenian.helloworld.HelloReply
 import org.athenian.helloworld.HelloRequest
-import org.athenian.kotlin_helloworld.msgs.Msgs.helloReply
+import org.athenian.helloworld.helloReply
 
 // https://github.com/GoogleCloudPlatform/kotlin-samples/blob/master/run/grpc-hello-world-streaming/src/main/kotlin/io/grpc/examples/helloworld/HelloWorldServer.kt
 
 class GreeterImpl : GreeterGrpcKt.GreeterCoroutineImplBase() {
-
-    override suspend fun sayHello(request: HelloRequest): HelloReply =
-        helloReply { message = "Hello ${request.name}" }
+    override suspend fun sayHello(request: HelloRequest): HelloReply = helloReply { message = "Hello ${request.name}" }
 
     override suspend fun sayHelloWithManyRequests(requests: Flow<HelloRequest>): HelloReply {
         val names = mutableListOf<String>()

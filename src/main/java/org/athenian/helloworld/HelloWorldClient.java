@@ -1,12 +1,9 @@
-package org.athenian.java_helloworld;
+package org.athenian.helloworld;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
-import org.athenian.helloworld.GreeterGrpc;
-import org.athenian.helloworld.HelloReply;
-import org.athenian.helloworld.HelloRequest;
 
 import java.io.Closeable;
 import java.io.IOException;

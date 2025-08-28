@@ -1,4 +1,4 @@
-package org.athenian.kotlin_helloworld.withCR
+package org.athenian.helloworld.withCR
 
 import io.grpc.ConnectivityState
 import io.grpc.ManagedChannel
@@ -7,8 +7,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.athenian.helloworld.GreeterGrpcKt.GreeterCoroutineStub
-import org.athenian.helloworld.HelloRequest
-import org.athenian.kotlin_helloworld.msgs.Msgs.helloRequest
+import org.athenian.helloworld.helloRequest
 import java.io.Closeable
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
@@ -16,7 +15,9 @@ import kotlin.time.Duration.Companion.milliseconds
 
 // https://github.com/GoogleCloudPlatform/kotlin-samples/blob/master/run/grpc-hello-world-streaming/src/main/kotlin/io/grpc/examples/helloworld/HelloWorldClient.kt
 
-class HelloWorldClient internal constructor(private val channel: ManagedChannel) : Closeable {
+class HelloWorldClient internal constructor(
+    private val channel: ManagedChannel,
+) : Closeable {
     constructor(host: String, port: Int = 50051) :
         this(ManagedChannelBuilder.forAddress(host, port).usePlaintext().build())
 
@@ -62,12 +63,9 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
                 repeat(5) {
                     delay(Random.nextLong(1_000).milliseconds)
                     val request =
-                        HelloRequest
-                            .newBuilder()
-                            .let { builder ->
-                                builder.name = "$name-$builder"
-                                builder.build()
-                            }
+                        helloRequest {
+                            this.name = "$name-${this.javaClass.simpleName}"
+                        }
                     println("sayHelloWithManyRequestsAndReplies() request: $request")
                     emit(request)
                 }
@@ -102,4 +100,3 @@ class HelloWorldClient internal constructor(private val channel: ManagedChannel)
         }
     }
 }
-

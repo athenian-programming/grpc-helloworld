@@ -1,23 +1,23 @@
-package org.athenian.kotlin_helloworld.withoutCR
+package org.athenian.helloworld.withoutCR
 
 import io.grpc.stub.StreamObserver
 import org.athenian.helloworld.GreeterGrpc
 import org.athenian.helloworld.HelloReply
 import org.athenian.helloworld.HelloRequest
+import org.athenian.helloworld.helloReply
 
 class GreeterImpl : GreeterGrpc.GreeterImplBase() {
-
-    override fun sayHello(request: HelloRequest, responseObserver: StreamObserver<HelloReply>) =
-        with(responseObserver) {
-            val reply =
-                HelloReply.newBuilder()
-                    .run {
-                        message = "Hello ${request.name}"
-                        build()
-                    }
-            onNext(reply)
-            onCompleted()
-        }
+    override fun sayHello(
+        request: HelloRequest,
+        responseObserver: StreamObserver<HelloReply>,
+    ) = with(responseObserver) {
+        val reply =
+            helloReply {
+                message = "Hello ${request.name}"
+            }
+        onNext(reply)
+        onCompleted()
+    }
 
     override fun sayHelloWithManyRequests(responseObserver: StreamObserver<HelloReply>) =
         object : StreamObserver<HelloRequest> {
@@ -35,24 +35,23 @@ class GreeterImpl : GreeterGrpc.GreeterImplBase() {
             override fun onCompleted() =
                 with(responseObserver) {
                     val msg =
-                        HelloReply.newBuilder()
-                            .run {
-                                message = "Hello ${names.joinToString(", ")}"
-                                build()!!
-                            }
+                        helloReply {
+                            message = "Hello ${names.joinToString(", ")}"
+                        }
                     onNext(msg)
                     onCompleted()
                 }
         }
 
-    override fun sayHelloWithManyReplies(request: HelloRequest, responseObserver: StreamObserver<HelloReply>) {
+    override fun sayHelloWithManyReplies(
+        request: HelloRequest,
+        responseObserver: StreamObserver<HelloReply>,
+    ) {
         repeat(5) {
             val reply =
-                HelloReply.newBuilder()
-                    .run {
-                        message = "Hello ${request.name} [$it]"
-                        build()
-                    }
+                helloReply {
+                    message = "Hello ${request.name} [$it]"
+                }
             responseObserver.onNext(reply)
         }
         responseObserver.onCompleted()
@@ -63,11 +62,9 @@ class GreeterImpl : GreeterGrpc.GreeterImplBase() {
             override fun onNext(request: HelloRequest) {
                 repeat(5) {
                     val reply =
-                        HelloReply.newBuilder()
-                            .run {
-                                message = "Hello ${request.name} [$it]"
-                                build()
-                            }
+                        helloReply {
+                            message = "Hello ${request.name} [$it]"
+                        }
                     responseObserver.onNext(reply)
                 }
             }

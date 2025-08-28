@@ -1,4 +1,4 @@
-package org.athenian.java_helloworld;
+package org.athenian.helloworld;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;

@@ -1,8 +1,10 @@
-package org.athenian.kotlin_helloworld.withoutCR
+package org.athenian.helloworld.withCR
 
 import io.grpc.ServerBuilder
 
-class HelloWorldServer(val port: Int) {
+class HelloWorldServer(
+    val port: Int,
+) {
     private val server = ServerBuilder.forPort(port).addService(GreeterImpl()).build()
 
     private fun start() {
@@ -14,7 +16,8 @@ class HelloWorldServer(val port: Int) {
                 System.err.println("*** shutting down gRPC server since JVM is shutting down")
                 server.shutdown()
                 System.err.println("*** server shut down")
-            })
+            },
+        )
     }
 
     companion object {
